@@ -1,6 +1,8 @@
 AWS Bastion Terraform module
 ===========================================
 
+[![Open Source Helpers](https://www.codetriage.com/guimove/terraform-aws-bastion/badges/users.svg)](https://www.codetriage.com/guimove/terraform-aws-bastion)
+
 Terraform module which creates a secure SSH bastion on AWS.
 
 Mainly inspired by [Securely Connect to Linux Instances Running in a Private Amazon VPC](https://aws.amazon.com/blogs/security/securely-connect-to-linux-instances-running-in-a-private-amazon-vpc/)

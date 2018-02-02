@@ -114,7 +114,6 @@ resource "aws_route53_record" "bastion_record_name" {
 
 resource "aws_lb" "bastion_lb" {
   internal = true
-  name = "prod-bastion-engie"
   subnets = [
     "${var.elb_subnets}"]
   load_balancer_type = "network"

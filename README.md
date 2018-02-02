@@ -9,7 +9,7 @@ Features
 --------
 
 This module will create an SSH bastion to securely connect in SSH  to your private instances.
-
+![Bastion Infrastrucutre](https://raw.githubusercontent.com/Guimove/terraform-aws-bastion/master/_docs/terraformawsbastion.png)
 All SSH  commands are logged on an S3 bucket for security compliance, in the /logs path.
 
 SSH  users are managed by their public key, simply drop the SSH key of the user in  the /public_keys path of the bucket.
@@ -31,29 +31,20 @@ Usage
 ```hcl
 module "bastion" {
   "source" = "terraform-aws-modules/bastion/aws"
-
   "bucket_name" = "my_famous_bucket_name"
-
   "region" = "eu-west-1"
-
   "vpc_id" = "my_vpc_id"
-
   "bastion_host_key_pair" = "my_key_pair"
-
   "hosted_zone_name" = "my.hosted.zone.name."
-
   "bastion_record_name" = "bastion.my.hosted.zone.name."
-
   "elb_subnets" = [
     "subnet-id1a",
     "subnet-id1b"
   ]
-
   "auto_scalling_group_subnets" = [
     "subnet-id1a",
     "subnet-id1b"
   ]
-
   tags = {
     "name" = "my_bastion_name",
     "description" = "my_bastion_description"

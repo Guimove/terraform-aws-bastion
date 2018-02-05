@@ -41,7 +41,7 @@ resource "aws_security_group" "private_instances_security_group" {
     protocol = "TCP"
     to_port = 22
     security_groups = [
-      "${aws_security_group.bastion_host_security_group.name}"]
+      "${aws_security_group.bastion_host_security_group.id}"]
   }
   tags = "${merge(var.tags)}"
 }

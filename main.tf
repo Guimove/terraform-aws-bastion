@@ -1,5 +1,5 @@
 resource "template_file" "user_data" {
-  template = "user_data.sh"
+  template = "${file("${path.module}/user_data.sh")}"
   vars {
     aws_region = "${var.region}"
     bucket_name = "${var.bucket_name}"

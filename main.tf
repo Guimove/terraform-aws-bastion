@@ -1,7 +1,3 @@
-provider "aws" {
-  region = "${var.region}"
-}
-
 resource "template_file" "user_data" {
   template = "user_data.sh"
   vars {

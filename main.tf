@@ -1,4 +1,4 @@
-resource "template_file" "user_data" {
+data "template_file" "user_data" {
   template = "${file("${path.module}/user_data.sh")}"
   vars {
     aws_region = "${var.region}"
@@ -155,7 +155,7 @@ resource "aws_launch_configuration" "bastion_launch_configuration" {
   security_groups = [
     "${aws_security_group.bastion_host_security_group.id}"
   ]
-  user_data = "${template_file.user_data.rendered}"
+  user_data = "${data.template_file.user_data.rendered}"
 }
 
 resource "aws_autoscaling_group" "bastion_auto_scaling_group" {

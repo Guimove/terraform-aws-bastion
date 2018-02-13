@@ -4,11 +4,23 @@ variable "bucket_name" {
 
 variable "tags" {
   description = "A mapping of tags to assign"
-  default     = {}
+  default = {}
   type = "map"
 }
 
 variable "region" {}
+
+variable "cidrs" {
+  description = "List of CIDRs than can access to the bastion. Default : 0.0.0.0/0"
+  type = "list"
+  default = [
+    "0.0.0.0/0"
+  ]
+}
+
+variable "is_lb_private" {
+  description = "If TRUE the load balancer scheme will be \"internal\" else \"internet-facing\""
+}
 
 variable "vpc_id" {
   description = "VPC id were we'll deploy the bastion"

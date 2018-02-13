@@ -23,8 +23,7 @@ resource "aws_security_group" "bastion_host_security_group" {
     from_port = 22
     protocol = "TCP"
     to_port = 22
-    cidr_blocks = [
-      "0.0.0.0/0"]
+    cidr_blocks = "${var.cidrs}"
   }
   tags = "${merge(var.tags)}"
 }
@@ -109,7 +108,7 @@ resource "aws_route53_record" "bastion_record_name" {
 }
 
 resource "aws_lb" "bastion_lb" {
-  internal = true
+  internal = "${var.is_lb_private}"
   subnets = [
     "${var.elb_subnets}"]
   load_balancer_type = "network"

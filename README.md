@@ -36,7 +36,7 @@ module "bastion" {
   "bucket_name" = "my_famous_bucket_name"
   "region" = "eu-west-1"
   "vpc_id" = "my_vpc_id"
-  "is_lb_internal" = "true|false"
+  "is_lb_private" = "true|false"
   "bastion_host_key_pair" = "my_key_pair"
   "hosted_zone_name" = "my.hosted.zone.name."
   "bastion_record_name" = "bastion.my.hosted.zone.name."

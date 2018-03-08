@@ -75,17 +75,17 @@ resource "aws_iam_role_policy" "bastion_host_role_policy" {
         "s3:PutObject",
         "s3:PutObjectAcl"
       ],
-      "Resource": "arn:aws:s3:::$${var.bucket_name}/logs/*"
+      "Resource": "arn:aws:s3:::${var.bucket_name}/logs/*"
     },
     {
       "Effect": "Allow",
       "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::$${var.bucket_name}/public-keys/*"
+      "Resource": "arn:aws:s3:::${var.bucket_name}/public-keys/*"
     },
     {
       "Effect": "Allow",
       "Action": "s3:ListBucket",
-      "Resource": "arn:aws:s3:::$${var.bucket_name}",
+      "Resource": "arn:aws:s3:::${var.bucket_name}",
       "Condition": {
         "StringEquals": {
           "s3:prefix": "public-keys/"
@@ -163,7 +163,7 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   min_size = 2
   desired_capacity = 2
   vpc_zone_identifier = [
-    "${var.auto_scaling_group_subnets}"
+    "${var.auto_scalling_group_subnets}"
   ]
   default_cooldown = 180
   health_check_grace_period = 180

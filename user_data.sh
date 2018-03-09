@@ -109,7 +109,7 @@ LOG_FILE="/var/log/bastion/users_changelog.txt"
 # The function returns the user name from the public key file name.
 # Example: public-keys/sshuser.pub => sshuser
 get_user_name () {
-  echo "$1" | sed -e 's/.*\\///g' | sed -e 's/\\.pub//g'
+  echo "$1" | sed -e "s/.*\\///g" | sed -e "s/\\.pub//g"
 }
 
 # For each public key available in the S3 bucket

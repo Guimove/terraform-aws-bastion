@@ -25,6 +25,12 @@ resource "aws_security_group" "bastion_host_security_group" {
     to_port = 22
     cidr_blocks = "${var.cidrs}"
   }
+  egress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
   tags = "${merge(var.tags)}"
 }
 
@@ -38,6 +44,7 @@ resource "aws_security_group" "private_instances_security_group" {
     security_groups = [
       "${aws_security_group.bastion_host_security_group.id}"]
   }
+
   tags = "${merge(var.tags)}"
 }
 

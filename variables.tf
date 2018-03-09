@@ -63,3 +63,7 @@ variable "bastion_amis" {
     "sa-east-1" = "ami-fb890097"
   }
 }
+
+variable "bastion_instance_count" {
+  default = 1
+}

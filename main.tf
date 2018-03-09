@@ -130,8 +130,8 @@ resource "aws_lb_target_group" "bastion_lb_target_group" {
   health_check {
     port = "traffic-port"
     protocol = "TCP"
-    healthy_threshold = 2
-    unhealthy_threshold = 2
+    healthy_threshold = "${var.bastion_instance_count}"
+    unhealthy_threshold = "${var.bastion_instance_count}"
   }
   tags = "${merge(var.tags)}"
 }
@@ -153,7 +153,7 @@ resource "aws_iam_instance_profile" "bastion_host_profile" {
 
 resource "aws_launch_configuration" "bastion_launch_configuration" {
   image_id = "${lookup(var.bastion_amis, var.region)}"
-  instance_type = "t2.micro"
+  instance_type = "t2.nano"
   associate_public_ip_address = true
   enable_monitoring = true
   iam_instance_profile = "${aws_iam_instance_profile.bastion_host_profile.name}"
@@ -169,9 +169,9 @@ resource "aws_launch_configuration" "bastion_launch_configuration" {
 
 resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   launch_configuration = "${aws_launch_configuration.bastion_launch_configuration.name}"
-  max_size = 2
-  min_size = 2
-  desired_capacity = 2
+  max_size = "${var.bastion_instance_count}"
+  min_size = "${var.bastion_instance_count}"
+  desired_capacity = "${var.bastion_instance_count}"
   vpc_zone_identifier = [
     "${var.auto_scalling_group_subnets}"
   ]

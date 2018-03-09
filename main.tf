@@ -162,6 +162,9 @@ resource "aws_launch_configuration" "bastion_launch_configuration" {
     "${aws_security_group.bastion_host_security_group.id}"
   ]
   user_data = "${data.template_file.user_data.rendered}"
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
@@ -178,4 +181,7 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   target_group_arns = [
     "${aws_lb_target_group.bastion_lb_target_group.arn}"
   ]
+  lifecycle {
+    create_before_destroy = true
+  }
 }

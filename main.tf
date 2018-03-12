@@ -25,6 +25,12 @@ resource "aws_security_group" "bastion_host_security_group" {
     to_port = 22
     cidr_blocks = "${var.cidrs}"
   }
+  egress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
   tags = "${merge(var.tags)}"
 }
 
@@ -38,6 +44,7 @@ resource "aws_security_group" "private_instances_security_group" {
     security_groups = [
       "${aws_security_group.bastion_host_security_group.id}"]
   }
+
   tags = "${merge(var.tags)}"
 }
 
@@ -75,17 +82,17 @@ resource "aws_iam_role_policy" "bastion_host_role_policy" {
         "s3:PutObject",
         "s3:PutObjectAcl"
       ],
-      "Resource": "arn:aws:s3:::$${var.bucket_name}/logs/*"
+      "Resource": "arn:aws:s3:::${var.bucket_name}/logs/*"
     },
     {
       "Effect": "Allow",
       "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::$${var.bucket_name}/public-keys/*"
+      "Resource": "arn:aws:s3:::${var.bucket_name}/public-keys/*"
     },
     {
       "Effect": "Allow",
       "Action": "s3:ListBucket",
-      "Resource": "arn:aws:s3:::$${var.bucket_name}",
+      "Resource": "arn:aws:s3:::${var.bucket_name}",
       "Condition": {
         "StringEquals": {
           "s3:prefix": "public-keys/"
@@ -123,8 +130,8 @@ resource "aws_lb_target_group" "bastion_lb_target_group" {
   health_check {
     port = "traffic-port"
     protocol = "TCP"
-    healthy_threshold = 2
-    unhealthy_threshold = 2
+    healthy_threshold = "${var.bastion_instance_count}"
+    unhealthy_threshold = "${var.bastion_instance_count}"
   }
   tags = "${merge(var.tags)}"
 }
@@ -146,7 +153,7 @@ resource "aws_iam_instance_profile" "bastion_host_profile" {
 
 resource "aws_launch_configuration" "bastion_launch_configuration" {
   image_id = "${lookup(var.bastion_amis, var.region)}"
-  instance_type = "t2.micro"
+  instance_type = "t2.nano"
   associate_public_ip_address = true
   enable_monitoring = true
   iam_instance_profile = "${aws_iam_instance_profile.bastion_host_profile.name}"
@@ -155,15 +162,18 @@ resource "aws_launch_configuration" "bastion_launch_configuration" {
     "${aws_security_group.bastion_host_security_group.id}"
   ]
   user_data = "${data.template_file.user_data.rendered}"
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   launch_configuration = "${aws_launch_configuration.bastion_launch_configuration.name}"
-  max_size = 2
-  min_size = 2
-  desired_capacity = 2
+  max_size = "${var.bastion_instance_count}"
+  min_size = "${var.bastion_instance_count}"
+  desired_capacity = "${var.bastion_instance_count}"
   vpc_zone_identifier = [
-    "${var.auto_scaling_group_subnets}"
+    "${var.auto_scalling_group_subnets}"
   ]
   default_cooldown = 180
   health_check_grace_period = 180
@@ -171,4 +181,7 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   target_group_arns = [
     "${aws_lb_target_group.bastion_lb_target_group.arn}"
   ]
+  lifecycle {
+    create_before_destroy = true
+  }
 }

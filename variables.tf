@@ -75,3 +75,23 @@ variable "bastion_instance_count" {
 variable "create_dns_record" {
   description = "Choose if you want to create a record name for the bastion (LB). If true 'hosted_zone_name' and 'bastion_record_name' are mandatory "
 }
+
+variable "log_auto_clean" {
+  description = "Enable or not the lifecycle"
+  default     = false
+}
+
+variable "log_standard_ia_days" {
+  description = "Number of days before moving logs to IA Storage"
+  default     = 30
+}
+
+variable "log_glacier_days" {
+  description = "Number of days before moving logs to Glacier"
+  default     = 60
+}
+
+variable "log_expiry_days" {
+  description = "Number of days before logs expiration"
+  default     = 90
+}

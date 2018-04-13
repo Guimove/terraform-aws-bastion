@@ -33,10 +33,12 @@ variable "bastion_host_key_pair" {
 
 variable "hosted_zone_name" {
   description = "Name of the hosted zone were we'll register the bastion DNS name"
+  default     = ""
 }
 
 variable "bastion_record_name" {
   description = "DNS record name to use for the bastion"
+  default     = ""
 }
 
 variable "elb_subnets" {
@@ -68,4 +70,8 @@ variable "bastion_amis" {
 
 variable "bastion_instance_count" {
   default = 1
+}
+
+variable "create_dns_record" {
+  description = "Choose if you want to create a record name for the bastion (LB). If true 'hosted_zone_name' and 'bastion_record_name' are mandatory "
 }

@@ -119,6 +119,7 @@ resource "aws_route53_record" "bastion_record_name" {
   type    = "CNAME"
   zone_id = "${var.hosted_zone_name}"
   ttl     = 300
+  count   = "${var.create_dns_record}"
 
   records = [
     "${aws_lb.bastion_lb.dns_name}",

@@ -143,10 +143,8 @@ resource "aws_lb_target_group" "bastion_lb_target_group" {
   target_type = "instance"
 
   health_check {
-    port                = "traffic-port"
-    protocol            = "TCP"
-    healthy_threshold   = "${var.bastion_instance_count}"
-    unhealthy_threshold = "${var.bastion_instance_count}"
+    port     = "traffic-port"
+    protocol = "TCP"
   }
 
   tags = "${merge(var.tags)}"

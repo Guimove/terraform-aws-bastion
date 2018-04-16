@@ -123,10 +123,10 @@ while read line; do
     # Create a user account if it does not already exist
     cut -d: -f1 /etc/passwd | grep -qx $USER_NAME
     if [ $? -eq 1 ]; then
-      /usr/sbin/adduser $USER_NAME && \\
-      mkdir -m 700 /home/$USER_NAME/.ssh && \\
-      chown $USER_NAME:$USER_NAME /home/$USER_NAME/.ssh && \\
-      echo "$line" >> ~/keys_installed && \\
+      /usr/sbin/adduser $USER_NAME && \
+      mkdir -m 700 /home/$USER_NAME/.ssh && \
+      chown $USER_NAME:$USER_NAME /home/$USER_NAME/.ssh && \
+      echo "$line" >> ~/keys_installed && \
       echo "`date --date="today" "+%Y-%m-%d %H-%M-%S"`: Creating user account for $USER_NAME ($line)" >> $LOG_FILE
     fi
 

@@ -45,14 +45,20 @@ resource "aws_s3_bucket" "bucket" {
 }
 
 resource "aws_security_group" "bastion_host_security_group" {
-  description = "Enable SSH access to the bastion host from external via port 22"
+  description = "Enable SSH access to the bastion host from external via SSH port"
   vpc_id      = "${var.vpc_id}"
 
   ingress {
-    from_port   = 22
+    from_port   = "${var.public_ssh_port}"
     protocol    = "TCP"
-    to_port     = 22
+    to_port     = "${var.public_ssh_port}"
     cidr_blocks = "${var.cidrs}"
+  }
+
+  egress {
+    from_port = "${var.private_ssh_port}"
+    protocol  = "TCP"
+    to_port   = "${var.private_ssh_port}"
   }
 
   egress {
@@ -73,13 +79,13 @@ resource "aws_security_group" "bastion_host_security_group" {
 }
 
 resource "aws_security_group" "private_instances_security_group" {
-  description = "Enable SSH access to the Private instances from the bastion via port 22"
+  description = "Enable SSH access to the Private instances from the bastion via SSH port"
   vpc_id      = "${var.vpc_id}"
 
   ingress {
-    from_port = 22
+    from_port = "${var.private_ssh_port}"
     protocol  = "TCP"
-    to_port   = 22
+    to_port   = "${var.private_ssh_port}"
 
     security_groups = [
       "${aws_security_group.bastion_host_security_group.id}",
@@ -171,7 +177,7 @@ resource "aws_lb" "bastion_lb" {
 }
 
 resource "aws_lb_target_group" "bastion_lb_target_group" {
-  port        = 22
+  port        = "${var.public_ssh_port}"
   protocol    = "TCP"
   vpc_id      = "${var.vpc_id}"
   target_type = "instance"
@@ -191,7 +197,7 @@ resource "aws_lb_listener" "bastion_lb_listener_22" {
   }
 
   load_balancer_arn = "${aws_lb.bastion_lb.arn}"
-  port              = 22
+  port              = "${var.public_ssh_port}"
   protocol          = "TCP"
 }
 

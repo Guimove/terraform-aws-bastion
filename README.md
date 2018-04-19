@@ -73,6 +73,8 @@ module "bastion" {
 | log_expiry_days | Number of days before logs expiration | string | `90` | no |
 | log_glacier_days | Number of days before moving logs to Glacier | string | `60` | no |
 | log_standard_ia_days | Number of days before moving logs to IA Storage | string | `30` | no |
+| private_ssh_port | Set the SSH port to use between the bastion and private instance | string | `22` | no |
+| public_ssh_port | Set the SSH port to use from desktop to the bastion | string | `22` | no |
 | region |  | string | - | yes |
 | tags | A mapping of tags to assign | map | `<map>` | no |
 | vpc_id | VPC id were we'll deploy the bastion | string | - | yes |
@@ -83,7 +85,6 @@ module "bastion" {
 |------|-------------|
 | bucket_name |  |
 | elb_ip |  |
-
 
 Known issues
 ------------

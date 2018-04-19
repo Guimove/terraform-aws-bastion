@@ -113,7 +113,7 @@ get_user_name () {
 }
 
 # For each public key available in the S3 bucket
-aws s3api list-objects --bucket ${bucket_name} --prefix public-keys/ --region ${aws_region} --output text --query 'Contents[?Size>`0`].Key' | sed -e 'y/\\t/\\n/' > ~/keys_retrieved_from_s3
+aws s3api list-objects --bucket ${bucket_name} --prefix public-keys/ --region ${aws_region} --output text --query 'Contents[?Size>`0`].Key' | sed -e 's/\\t/\\n/' > ~/keys_retrieved_from_s3
 while read line; do
   USER_NAME="`get_user_name "$line"`"
 
@@ -123,10 +123,10 @@ while read line; do
     # Create a user account if it does not already exist
     cut -d: -f1 /etc/passwd | grep -qx $USER_NAME
     if [ $? -eq 1 ]; then
-      /usr/sbin/adduser $USER_NAME && \\
-      mkdir -m 700 /home/$USER_NAME/.ssh && \\
-      chown $USER_NAME:$USER_NAME /home/$USER_NAME/.ssh && \\
-      echo "$line" >> ~/keys_installed && \\
+      /usr/sbin/adduser $USER_NAME && \
+      mkdir -m 700 /home/$USER_NAME/.ssh && \
+      chown $USER_NAME:$USER_NAME /home/$USER_NAME/.ssh && \
+      echo "$line" >> ~/keys_installed && \
       echo "`date --date="today" "+%Y-%m-%d %H-%M-%S"`: Creating user account for $USER_NAME ($line)" >> $LOG_FILE
     fi
 

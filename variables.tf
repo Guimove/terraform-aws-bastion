@@ -68,6 +68,10 @@ variable "bastion_amis" {
   }
 }
 
+variable "associate_public_ip_address" {
+  default = true
+}
+
 variable "bastion_instance_count" {
   default = 1
 }

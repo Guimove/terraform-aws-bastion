@@ -12,7 +12,7 @@ resource "aws_s3_bucket" "bucket" {
   acl    = "bucket-owner-full-control"
 
   versioning {
-    enabled = true
+    enabled = "${var.bucket_versioning}"
   }
 
   lifecycle_rule {

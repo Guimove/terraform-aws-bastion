@@ -2,6 +2,11 @@ variable "bucket_name" {
   description = "Bucket name were the bastion will store the logs"
 }
 
+variable "bucket_versioning" {
+  default = true
+  description = "Enable bucket versioning or not"
+}
+
 variable "tags" {
   description = "A mapping of tags to assign"
   default     = {}

@@ -14,7 +14,7 @@ This module will create an SSH bastion to securely connect in SSH  to your priva
 ![Bastion Infrastrucutre](https://raw.githubusercontent.com/Guimove/terraform-aws-bastion/master/_docs/terraformawsbastion.png)
 All SSH  commands are logged on an S3 bucket for security compliance, in the /logs path.
 
-SSH  users are managed by their public key, simply drop the SSH key of the user in  the /public_keys path of the bucket.
+SSH  users are managed by their public key, simply drop the SSH key of the user in  the /public-keys path of the bucket.
 Keys should be named like 'username.pub', this will create the user 'username' on the bastion server.
 
 Then after you'll be able to connect to the server with : 

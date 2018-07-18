@@ -65,7 +65,7 @@ module "bastion" {
 | bastion_record_name | DNS record name to use for the bastion | string | `` | no |
 | bucket_name | Bucket name were the bastion will store the logs | string | - | yes |
 | cidrs | List of CIDRs than can access to the bastion. Default : 0.0.0.0/0 | list | `<list>` | no |
-| create_dns_record | Choose if you want to create a record name for the bastion (LB). If true 'hosted_zone_name' and 'bastion_record_name' are mandatory | string | - | yes |
+| create_dns_record | Choose if you want to create a record name for the bastion (LB). If true 'hosted_zone_name' and 'bastion_record_name' are mandatory | integer | - | yes |
 | elb_subnets | List of subnet were the ELB will be deployed | list | - | yes |
 | hosted_zone_name | Name of the hosted zone were we'll register the bastion DNS name | string | `` | no |
 | is_lb_private | If TRUE the load balancer scheme will be "internal" else "internet-facing" | string | - | yes |

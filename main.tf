@@ -59,6 +59,7 @@ resource "aws_security_group" "bastion_host_security_group" {
     from_port = "${var.private_ssh_port}"
     protocol  = "TCP"
     to_port   = "${var.private_ssh_port}"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {

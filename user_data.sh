@@ -27,7 +27,7 @@ mkdir /usr/bin/bastion
 cat > /usr/bin/bastion/shell << 'EOF'
 
 # Check that the SSH client did not supply a command
-if [[ -z $SSH_ORIGINAL_COMMAND ]]; then
+if [[ -z ${SSH_ORIGINAL_COMMAND} ]]; then
 
   # The format of log files is /var/log/bastion/YYYY-MM-DD_HH-MM-SS_user
   LOG_FILE="`date --date="today" "+%Y-%m-%d_%H-%M-%S"`_`whoami`"
@@ -36,14 +36,14 @@ if [[ -z $SSH_ORIGINAL_COMMAND ]]; then
   # Print a welcome message
   echo ""
   echo "NOTE: This SSH session will be recorded"
-  echo "AUDIT KEY: $LOG_FILE"
+  echo "AUDIT KEY: ${LOG_FILE}"
   echo ""
 
   # I suffix the log file name with a random string. I explain why later on.
   SUFFIX=`mktemp -u _XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`
 
   # Wrap an interactive shell into "script" to record the SSH session
-  script -qf --timing=$LOG_DIR$LOG_FILE$SUFFIX.time $LOG_DIR$LOG_FILE$SUFFIX.data --command=/bin/bash
+  script -qf --timing=${LOG_DIR}${LOG_FILE}${SUFFIX}.time ${LOG_DIR}${LOG_FILE}${SUFFIX}.data --command=/bin/bash
 
 else
 
@@ -86,7 +86,7 @@ cat > /usr/bin/bastion/sync_s3 << 'EOF'
 # Copy log files to S3 with server-side encryption enabled.
 # Then, if successful, delete log files that are older than a day.
 LOG_DIR="/var/log/bastion/"
-aws s3 cp $LOG_DIR s3://${bucket_name}/logs/ --sse --region ${aws_region} --recursive && find $LOG_DIR* -mtime +1 -exec rm {} \\;
+aws s3 cp ${LOG_DIR} s3://${bucket_name}/logs/ --sse --region ${aws_region} --recursive && find ${LOG_DIR}* -mtime +1 -exec rm {} \;
 
 EOF
 
@@ -109,11 +109,11 @@ LOG_FILE="/var/log/bastion/users_changelog.txt"
 # The function returns the user name from the public key file name.
 # Example: public-keys/sshuser.pub => sshuser
 get_user_name () {
-  echo "$1" | sed -e "s/.*\\///g" | sed -e "s/\\.pub//g"
+  echo "$1" | sed -e "s/.*\///g" | sed -e "s/\.pub//g"
 }
 
 # For each public key available in the S3 bucket
-aws s3api list-objects --bucket ${bucket_name} --prefix public-keys/ --region ${aws_region} --output text --query 'Contents[?Size>`0`].Key' | sed -e "s/\\t/\\n/" > ~/keys_retrieved_from_s3
+aws s3api list-objects --bucket ${bucket_name} --prefix public-keys/ --region ${aws_region} --output text --query 'Contents[?Size>`0`].Key' | sed -e "s/\t/\n/" > ~/keys_retrieved_from_s3
 while read line; do
   USER_NAME="`get_user_name "$line"`"
 
@@ -121,13 +121,13 @@ while read line; do
   if [[ "$USER_NAME" =~ ^[a-z][-a-z0-9]*$ ]]; then
 
     # Create a user account if it does not already exist
-    cut -d: -f1 /etc/passwd | grep -qx $USER_NAME
+    cut -d: -f1 /etc/passwd | grep -qx ${USER_NAME}
     if [ $? -eq 1 ]; then
-      /usr/sbin/adduser $USER_NAME && \
-      mkdir -m 700 /home/$USER_NAME/.ssh && \
-      chown $USER_NAME:$USER_NAME /home/$USER_NAME/.ssh && \
+      /usr/sbin/adduser ${USER_NAME} && \
+      mkdir -m 700 /home/${USER_NAME}/.ssh && \
+      chown ${USER_NAME}:${USER_NAME} /home/${USER_NAME}/.ssh && \
       echo "$line" >> ~/keys_installed && \
-      echo "`date --date="today" "+%Y-%m-%d %H-%M-%S"`: Creating user account for $USER_NAME ($line)" >> $LOG_FILE
+      echo "`date --date="today" "+%Y-%m-%d %H-%M-%S"`: Creating user account for ${USER_NAME} ($line)" >> ${LOG_FILE}
     fi
 
     # Copy the public key from S3, if an user account was created from this key
@@ -136,7 +136,7 @@ while read line; do
       if [ $? -eq 0 ]; then
         aws s3 cp s3://${bucket_name}/$line /home/$USER_NAME/.ssh/authorized_keys --region ${aws_region}
         chmod 600 /home/$USER_NAME/.ssh/authorized_keys
-        chown $USER_NAME:$USER_NAME /home/$USER_NAME/.ssh/authorized_keys
+        chown ${USER_NAME}:${USER_NAME} /home/${USER_NAME}/.ssh/authorized_keys
       fi
     fi
 
@@ -147,13 +147,13 @@ done < ~/keys_retrieved_from_s3
 if [ -f ~/keys_installed ]; then
   sort -uo ~/keys_installed ~/keys_installed
   sort -uo ~/keys_retrieved_from_s3 ~/keys_retrieved_from_s3
-  comm -13 ~/keys_retrieved_from_s3 ~/keys_installed | sed "s/\\t//g" > ~/keys_to_remove
+  comm -13 ~/keys_retrieved_from_s3 ~/keys_installed | sed "s/\t//g" > ~/keys_to_remove
   while read line; do
     USER_NAME="`get_user_name "$line"`"
-    echo "`date --date="today" "+%Y-%m-%d %H-%M-%S"`: Removing user account for $USER_NAME ($line)" >> $LOG_FILE
-    /usr/sbin/userdel -r -f $USER_NAME
+    echo "`date --date="today" "+%Y-%m-%d %H-%M-%S"`: Removing user account for ${USER_NAME} ($line)" >> ${LOG_FILE}
+    /usr/sbin/userdel -r -f ${USER_NAME}
   done < ~/keys_to_remove
-  comm -3 ~/keys_installed ~/keys_to_remove | sed "s/\\t//g" > ~/tmp && mv ~/tmp ~/keys_installed
+  comm -3 ~/keys_installed ~/keys_to_remove | sed "s/\t//g" > ~/tmp && mv ~/tmp ~/keys_installed
 fi
 
 EOF

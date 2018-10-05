@@ -64,7 +64,7 @@ variable "bastion_amis" {
     "us-west-2"      = "ami-d0f506b0"
     "us-west-1"      = "ami-6e84fa0e"
     "eu-west-1"      = "ami-b0ac25c3"
-    "eu-west-2"      = "ami-0eafb5ee12a2cbffc"
+    "eu-west-2"      = "ami-0135b45434a538069"
     "eu-central-1"   = "ami-d3c022bc"
     "ap-southeast-1" = "ami-1ddc0b7e"
     "ap-northeast-2" = "ami-cf32faa1"

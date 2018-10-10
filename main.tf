@@ -244,6 +244,11 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
     "${aws_lb_target_group.bastion_lb_target_group.arn}",
   ]
 
+  tags = ["${concat(
+      list(map("key", "Name", "value", var.name, "propagate_at_launch", true)),
+      local.tags_asg_format
+   )}"]
+
   lifecycle {
     create_before_destroy = true
   }

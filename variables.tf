@@ -1,3 +1,7 @@
+variable "name" {
+  description = "Name of autoscaling group instances"
+}
+
 variable "bucket_name" {
   description = "Bucket name were the bastion will store the logs"
 }

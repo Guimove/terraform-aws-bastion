@@ -86,7 +86,7 @@ cat > /usr/bin/bastion/sync_s3 << 'EOF'
 
 # We check that the previous copy is not already running
 for pid in $(pgrep -f sync_s3); do
-    if [ $pid != $$ ]; then
+    if [ $pid != $$$ ]; then
         echo "[$(date)] : sync_s3 : Process is already running with PID $pid"
         exit 1
     else
@@ -117,7 +117,7 @@ cat > /usr/bin/bastion/sync_users << 'EOF'
 
 # We check that the previous copy is not already running
 for pid in $(pgrep -f sync_users); do
-    if [ $pid != $$ ]; then
+    if [ $pid != $$$ ]; then
         echo "[$(date)] : sync_users : Process is already running with PID $pid"
         exit 1
     else

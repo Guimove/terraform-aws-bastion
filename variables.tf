@@ -3,7 +3,7 @@ variable "bucket_name" {
 }
 
 variable "bucket_versioning" {
-  default = true
+  default     = true
   description = "Enable bucket versioning or not"
 }
 
@@ -54,23 +54,6 @@ variable "elb_subnets" {
 variable "auto_scaling_group_subnets" {
   type        = "list"
   description = "List of subnet were the Auto Scalling Group will deploy the instances"
-}
-
-variable "bastion_amis" {
-  type = "map"
-
-  default = {
-    "us-east-1"      = "ami-f5f41398"
-    "us-west-2"      = "ami-d0f506b0"
-    "us-west-1"      = "ami-6e84fa0e"
-    "eu-west-1"      = "ami-b0ac25c3"
-    "eu-central-1"   = "ami-d3c022bc"
-    "ap-southeast-1" = "ami-1ddc0b7e"
-    "ap-northeast-2" = "ami-cf32faa1"
-    "ap-northeast-1" = "ami-29160d47"
-    "ap-southeast-2" = "ami-0c95b86f"
-    "sa-east-1"      = "ami-fb890097"
-  }
 }
 
 variable "associate_public_ip_address" {

@@ -135,7 +135,7 @@ get_user_name () {
 }
 
 # For each public key available in the S3 bucket
-aws s3api list-objects --bucket ${bucket_name} --prefix public-keys/ --region ${aws_region} --output text --query 'Contents[?Size>`0`].Key' | sed -e "s/\t/\n/" > ~/keys_retrieved_from_s3
+aws s3api list-objects --bucket ${bucket_name} --prefix public-keys/ --region ${aws_region} --output text --query 'Contents[?Size>`0`].Key' | tr '\t' '\n' > ~/keys_retrieved_from_s3
 while read line; do
   USER_NAME="`get_user_name "$line"`"
 

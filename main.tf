@@ -56,9 +56,9 @@ resource "aws_security_group" "bastion_host_security_group" {
   }
 
   egress {
-    from_port = "${var.private_ssh_port}"
-    protocol  = "TCP"
-    to_port   = "${var.private_ssh_port}"
+    from_port   = "${var.private_ssh_port}"
+    protocol    = "TCP"
+    to_port     = "${var.private_ssh_port}"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -208,7 +208,7 @@ resource "aws_iam_instance_profile" "bastion_host_profile" {
 }
 
 resource "aws_launch_configuration" "bastion_launch_configuration" {
-  image_id                    = "${lookup(var.bastion_amis, var.region)}"
+  image_id                    = "${data.aws_ami.amazon-linux-2.id}"
   instance_type               = "t2.nano"
   associate_public_ip_address = "${var.associate_public_ip_address}"
   enable_monitoring           = true

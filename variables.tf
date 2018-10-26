@@ -46,6 +46,11 @@ variable "bastion_record_name" {
   default     = ""
 }
 
+variable "bastion_launch_configuration_name" {
+  description = "Bastion Launch configuration Name, will also be used for the ASG"
+  default     = ""
+}
+
 variable "elb_subnets" {
   type        = "list"
   description = "List of subnet were the ELB will be deployed"

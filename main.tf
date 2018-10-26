@@ -209,6 +209,7 @@ resource "aws_iam_instance_profile" "bastion_host_profile" {
 }
 
 resource "aws_launch_configuration" "bastion_launch_configuration" {
+  name_prefix                 = "${var.bastion_launch_configuration_name}"
   image_id                    = "${data.aws_ami.amazon-linux-2.id}"
   instance_type               = "t2.nano"
   associate_public_ip_address = "${var.associate_public_ip_address}"
@@ -228,6 +229,7 @@ resource "aws_launch_configuration" "bastion_launch_configuration" {
 }
 
 resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
+  name                 = "ASG-${aws_launch_configuration.bastion_launch_configuration.name}"
   launch_configuration = "${aws_launch_configuration.bastion_launch_configuration.name}"
   max_size             = "${var.bastion_instance_count}"
   min_size             = "${var.bastion_instance_count}"
@@ -243,6 +245,10 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
 
   target_group_arns = [
     "${aws_lb_target_group.bastion_lb_target_group.arn}",
+  ]
+
+  termination_policies = [
+    "OldestLaunchConfiguration",
   ]
 
   lifecycle {

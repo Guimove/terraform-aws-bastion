@@ -84,16 +84,6 @@ service sshd restart
 cat > /usr/bin/bastion/sync_s3 << 'EOF'
 #!/usr/bin/env bash
 
-# We check that the previous copy is not already running
-for pid in $(pgrep -f sync_s3); do
-    if [ $pid != $$ ]; then
-        echo "[$(date)] : sync_s3 : Process is already running with PID $pid"
-        exit 1
-    else
-      echo "Running with PID $pid"
-    fi
-done
-
 # Copy log files to S3 with server-side encryption enabled.
 # Then, if successful, delete log files that are older than a day.
 LOG_DIR="/var/log/bastion/"
@@ -114,16 +104,6 @@ chmod 700 /usr/bin/bastion/sync_s3
 
 cat > /usr/bin/bastion/sync_users << 'EOF'
 #!/usr/bin/env bash
-
-# We check that the previous copy is not already running
-for pid in $(pgrep -f sync_users); do
-    if [ $pid != $$$ ]; then
-        echo "[$(date)] : sync_users : Process is already running with PID $pid"
-        exit 1
-    else
-      echo "Running with PID $pid"
-    fi
-done
 
 # The file will log user changes
 LOG_FILE="/var/log/bastion/users_changelog.txt"

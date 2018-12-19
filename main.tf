@@ -255,7 +255,14 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
     create_before_destroy = true
   }
 
-  tags = [
-    "${merge(var.tags, map("propagate_at_launch", true))}"
-  ]
+  tags = ["${
+    concat(
+      list(
+        map(
+          "key", element(keys(var.tags), 1),
+          "value", element(values(var.tags), 1),
+          "propagate_at_launch", true
+        )
+      )
+  )}"]
 }

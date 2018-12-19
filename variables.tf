@@ -69,6 +69,10 @@ variable "bastion_instance_count" {
   default = 1
 }
 
+variable "bastion_instance_type" {
+  default = "t2.micro"
+}
+
 variable "create_dns_record" {
   description = "Choose if you want to create a record name for the bastion (LB). If true 'hosted_zone_name' and 'bastion_record_name' are mandatory "
 }

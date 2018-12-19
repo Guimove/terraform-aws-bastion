@@ -211,7 +211,7 @@ resource "aws_iam_instance_profile" "bastion_host_profile" {
 resource "aws_launch_configuration" "bastion_launch_configuration" {
   name_prefix                 = "${var.bastion_launch_configuration_name}"
   image_id                    = "${data.aws_ami.amazon-linux-2.id}"
-  instance_type               = "t2.nano"
+  instance_type               = "${var.bastion_instance_type}"
   associate_public_ip_address = "${var.associate_public_ip_address}"
   enable_monitoring           = true
   iam_instance_profile        = "${aws_iam_instance_profile.bastion_host_profile.name}"
@@ -254,4 +254,8 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   lifecycle {
     create_before_destroy = true
   }
+
+  tags = [
+    "${merge(var.tags, map("propagate_at_launch", true))}"
+  ]
 }

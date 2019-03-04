@@ -32,7 +32,7 @@ resource "aws_s3_bucket" "bucket" {
     }
   }
 
-  tags = "${merge(var.tags)}"
+  tags = "${local.tags}"
 }
 
 resource "aws_security_group" "private_instances_security_group" {
@@ -139,7 +139,7 @@ resource "aws_lb" "bastion_lb" {
   ]
 
   load_balancer_type = "network"
-  tags               = "${merge(var.tags)}"
+  tags               = "${local.tags}"
 }
 
 resource "aws_iam_instance_profile" "bastion_host_profile" {

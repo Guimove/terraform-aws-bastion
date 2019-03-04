@@ -1,5 +1,5 @@
 locals {
-  tags        = "${merge(var.tags, map("vpc", ${var.vpc_id}, "tenancy", "shared"))}"
+  tags        = "${merge(var.tags, map("vpc", "${var.vpc_id}", "tenancy", "shared"))}"
   bucket_name = "${var.namespace}-${var.stage}-${var.name}-access-logs"
 }
 

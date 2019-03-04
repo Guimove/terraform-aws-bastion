@@ -179,7 +179,7 @@ module "autoscale_group" {
   user_data_base64            = "${base64encode(data.template_file.user_data.rendered)}"
   iam_instance_profile_name   = "${aws_iam_instance_profile.bastion_host_profile.name}"
   key_name                    = "${var.key_name}"
-  target_group_arns           = "${aws_lb_target_group.lb_target_group.arn}"
+  target_group_arns           = ["${aws_lb_target_group.lb_target_group.arn}"]
 
   tags = {
     vpc     = "${var.vpc_id}"

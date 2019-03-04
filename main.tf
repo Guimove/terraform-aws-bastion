@@ -164,6 +164,7 @@ module "autoscale_group" {
   associate_public_ip_address = false
   user_data_base64            = "${data.template_file.user_data.rendered}"
   aws_iam_instance_profile    = "${aws_iam_instance_profile.bastion_host_profile.id}"
+  key_name                    = "${var.key_name}"
 
   tags = {
     vpc     = "${var.vpc_id}"

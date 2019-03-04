@@ -108,7 +108,7 @@ variable "lb_record_name" {
   default     = ""
 }
 
-variable "key_pair" {
+variable "key_name" {
   description = "Select the key pair to use to launch the bastion host"
 }
 

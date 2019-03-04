@@ -142,6 +142,20 @@ resource "aws_lb" "bastion_lb" {
   tags               = "${local.tags}"
 }
 
+resource "aws_lb_target_group" "lb_target_group" {
+  port        = "${var.ssh_port}"
+  protocol    = "TCP"
+  vpc_id      = "${var.vpc_id}"
+  target_type = "instance"
+
+  health_check {
+    port     = "traffic-port"
+    protocol = "TCP"
+  }
+
+  tags = "${local.tags}"
+}
+
 resource "aws_iam_instance_profile" "bastion_host_profile" {
   role = "${aws_iam_role.host_role.name}"
   path = "/"
@@ -165,6 +179,7 @@ module "autoscale_group" {
   user_data_base64            = "${base64encode(data.template_file.user_data.rendered)}"
   iam_instance_profile_name   = "${aws_iam_instance_profile.bastion_host_profile.name}"
   key_name                    = "${var.key_name}"
+  target_group_arns           = "${aws_lb_target_group.lb_target_group.arn}"
 
   tags = {
     vpc     = "${var.vpc_id}"

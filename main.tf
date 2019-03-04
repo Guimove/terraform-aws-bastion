@@ -156,6 +156,17 @@ resource "aws_lb_target_group" "lb_target_group" {
   tags = "${local.tags}"
 }
 
+resource "aws_lb_listener" "lb_listener_22" {
+  "default_action" {
+    target_group_arn = "${aws_lb_target_group.lb_target_group.arn}"
+    type             = "forward"
+  }
+
+  load_balancer_arn = "${aws_lb.bastion_lb.arn}"
+  port              = "${var.ssh_port}"
+  protocol          = "TCP"
+}
+
 resource "aws_iam_instance_profile" "bastion_host_profile" {
   role = "${aws_iam_role.host_role.name}"
   path = "/"

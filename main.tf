@@ -172,5 +172,5 @@ module "autoscale_group" {
   }
 
   # Auto-scaling policies and CloudWatch metric alarms
-  autoscaling_policies_enabled = "true"
+  autoscaling_policies_enabled = "${var.auto_scaling_enabled}"
 }

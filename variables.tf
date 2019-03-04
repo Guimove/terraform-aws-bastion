@@ -137,3 +137,7 @@ variable "instance_type" {
 variable "health_check_type" {
   default = "EC2"
 }
+
+variable "auto_scaling_enabled" {
+  default = ""
+}

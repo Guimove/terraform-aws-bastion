@@ -163,7 +163,7 @@ module "autoscale_group" {
   max_size                    = "${var.max_size}"
   associate_public_ip_address = false
   user_data_base64            = "${data.template_file.user_data.rendered}"
-  aws_iam_instance_profile    = "${aws_iam_instance_profile.bastion_host_profile.id}"
+  iam_instance_profile_name   = "${aws_iam_instance_profile.bastion_host_profile.name}"
   key_name                    = "${var.key_name}"
 
   tags = {

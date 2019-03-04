@@ -120,7 +120,7 @@ EOF
 
 resource "aws_route53_record" "record_name" {
   name    = "${var.lb_record_name}"
-  zone_id = "${var.parent_domain_name}"
+  zone_id = "${var.domain_name}"
   type    = "A"
   count   = "${var.create_dns_record}"
 

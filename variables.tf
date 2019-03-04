@@ -98,7 +98,7 @@ variable "create_dns_record" {
   default     = true
 }
 
-variable "parent_domain_name" {
+variable "domain_name" {
   description = "Name of the hosted zone were we'll register the bastion DNS name"
   default     = ""
 }

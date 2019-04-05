@@ -191,11 +191,11 @@ module "autoscale_group" {
   iam_instance_profile_name   = "${aws_iam_instance_profile.bastion_host_profile.name}"
   key_name                    = "${var.key_name}"
   target_group_arns           = ["${aws_lb_target_group.lb_target_group.arn}"]
+  enabled                     = "true"
 
   tags = {
-    vpc                 = "${var.vpc_id}"
-    tenancy             = "shared"
-    propagate_at_launch = true
+    vpc     = "${var.vpc_id}"
+    tenancy = "shared"
   }
 
   # Auto-scaling policies and CloudWatch metric alarms

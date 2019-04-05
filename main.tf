@@ -193,11 +193,6 @@ module "autoscale_group" {
   target_group_arns           = ["${aws_lb_target_group.lb_target_group.arn}"]
   enabled                     = "true"
 
-  tags = {
-    vpc     = "${var.vpc_id}"
-    tenancy = "shared"
-  }
-
   # Auto-scaling policies and CloudWatch metric alarms
   autoscaling_policies_enabled = "${var.auto_scaling_enabled}"
 }

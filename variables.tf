@@ -139,5 +139,5 @@ variable "health_check_type" {
 }
 
 variable "auto_scaling_enabled" {
-  default = ""
+  default = "false"
 }

@@ -1,5 +1,16 @@
+module "label" {
+  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.1.6"
+  namespace  = "${var.namespace}"
+  name       = "${var.name}"
+  stage      = "${var.stage}"
+  delimiter  = "${var.delimiter}"
+  attributes = "${var.attributes}"
+  tags       = "${var.tags}"
+  enabled    = "${var.enabled}"
+}
+
 resource "aws_s3_bucket" "bucket" {
-  bucket = "${local.bucket_name}"
+  bucket = "${module.label.id}-access-logs"
   acl    = "bucket-owner-full-control"
 
   versioning {
@@ -36,7 +47,7 @@ resource "aws_s3_bucket" "bucket" {
 }
 
 resource "aws_security_group" "private_instances_security_group" {
-  name        = "${var.namespace}-${var.stage}-${var.name}"
+  name        = "${module.label.id}"
   description = "Enable SSH access to the bastion host from external via SSH port"
   vpc_id      = "${var.vpc_id}"
 
@@ -59,7 +70,7 @@ resource "aws_security_group" "private_instances_security_group" {
 
 resource "aws_iam_role" "host_role" {
   path        = "/"
-  name        = "${var.namespace}-${var.stage}-${var.name}"
+  name        = "${module.label.id}"
   description = "Role assigned to bastion instance"
 
   assume_role_policy = <<EOF
@@ -84,7 +95,7 @@ EOF
 
 resource "aws_iam_role_policy" "host_role_policy" {
   role = "${aws_iam_role.host_role.id}"
-  name = "${var.namespace}-${var.stage}-${var.name}"
+  name = ""
 
   policy = <<EOF
 {
@@ -96,17 +107,17 @@ resource "aws_iam_role_policy" "host_role_policy" {
         "s3:PutObject",
         "s3:PutObjectAcl"
       ],
-      "Resource": "arn:aws:s3:::${local.bucket_name}/logs/*"
+      "Resource": "arn:aws:s3:::${module.label.id}-access-logs/logs/*"
     },
     {
       "Effect": "Allow",
       "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::${local.bucket_name}/public-keys/*"
+      "Resource": "arn:aws:s3:::${module.label.id}-access-logs/public-keys/*"
     },
     {
       "Effect": "Allow",
       "Action": "s3:ListBucket",
-      "Resource": "arn:aws:s3:::${local.bucket_name}",
+      "Resource": "arn:aws:s3:::${module.label.id}-access-logs",
       "Condition": {
         "StringEquals": {
           "s3:prefix": "public-keys/"
@@ -143,6 +154,7 @@ resource "aws_lb" "bastion_lb" {
 }
 
 resource "aws_lb_target_group" "lb_target_group" {
+  name        = "${module.label.id}"
   port        = "${var.ssh_port}"
   protocol    = "TCP"
   vpc_id      = "${var.vpc_id}"
@@ -175,24 +187,24 @@ resource "aws_iam_instance_profile" "bastion_host_profile" {
 module "autoscale_group" {
   source = "git::https://github.com/cloudposse/terraform-aws-ec2-autoscale-group.git?ref=master"
 
-  namespace = "${var.namespace}"
-  stage     = "${var.stage}"
-  name      = "${var.name}"
+  namespace  = "${var.namespace}"
+  stage      = "${var.stage}"
+  name       = "${var.name}"
+  attributes = "${var.attributes}"
 
-  image_id                    = "${data.aws_ami.amazon-linux-2.id}"
-  instance_type               = "${var.instance_type}"
-  security_group_ids          = ["${aws_security_group.private_instances_security_group.id}"]
-  subnet_ids                  = "${var.lb_subnets}"
-  health_check_type           = "${var.health_check_type}"
-  min_size                    = "${var.min_size}"
-  max_size                    = "${var.max_size}"
-  associate_public_ip_address = false
-  user_data_base64            = "${base64encode(data.template_file.user_data.rendered)}"
-  iam_instance_profile_name   = "${aws_iam_instance_profile.bastion_host_profile.name}"
-  key_name                    = "${var.key_name}"
-  target_group_arns           = ["${aws_lb_target_group.lb_target_group.arn}"]
-  enabled                     = "true"
-
-  # Auto-scaling policies and CloudWatch metric alarms
+  image_id                     = "${data.aws_ami.amazon-linux-2.id}"
+  instance_type                = "${var.instance_type}"
+  security_group_ids           = ["${aws_security_group.private_instances_security_group.id}"]
+  subnet_ids                   = "${var.lb_subnets}"
+  health_check_type            = "${var.health_check_type}"
+  min_size                     = "${var.min_size}"
+  max_size                     = "${var.max_size}"
+  associate_public_ip_address  = false
+  user_data_base64             = "${base64encode(data.template_file.user_data.rendered)}"
+  iam_instance_profile_name    = "${aws_iam_instance_profile.bastion_host_profile.name}"
+  key_name                     = "${var.key_name}"
+  target_group_arns            = ["${aws_lb_target_group.lb_target_group.arn}"]
+  enabled                      = "true"
+  tags                         = "${local.tags}"
   autoscaling_policies_enabled = "${var.auto_scaling_enabled}"
 }

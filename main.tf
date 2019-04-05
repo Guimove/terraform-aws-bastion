@@ -95,7 +95,7 @@ EOF
 
 resource "aws_iam_role_policy" "host_role_policy" {
   role = "${aws_iam_role.host_role.id}"
-  name = ""
+  name = "${module.label.id}"
 
   policy = <<EOF
 {

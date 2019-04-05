@@ -1,6 +1,6 @@
 locals {
   tags        = "${merge(var.tags, map("vpc", "${var.vpc_id}", "tenancy", "shared"))}"
-  bucket_name = "${var.namespace}-${var.stage}-${var.name}-access-logs"
+  bucket_name = "${var.namespace}-${var.stage}-${var.name}-${var.attributes[0]}-access-logs"
 }
 
 data "aws_ami" "amazon-linux-2" {

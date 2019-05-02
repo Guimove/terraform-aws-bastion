@@ -11,7 +11,7 @@ resource "aws_s3_bucket" "bucket" {
   bucket = "${var.bucket_name}"
   acl    = "bucket-owner-full-control"
   
-  force_destroy = "${var.force_destroy}"
+  force_destroy = "${var.bucket_force_destroy}"
 
   versioning {
     enabled = "${var.bucket_versioning}"

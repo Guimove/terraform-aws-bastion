@@ -10,6 +10,8 @@ data "template_file" "user_data" {
 resource "aws_s3_bucket" "bucket" {
   bucket = "${var.bucket_name}"
   acl    = "bucket-owner-full-control"
+  
+  force_destroy = "${var.force_destroy}"
 
   versioning {
     enabled = "${var.bucket_versioning}"
@@ -44,6 +46,12 @@ resource "aws_s3_bucket" "bucket" {
   tags = "${merge(var.tags)}"
 }
 
+resource "aws_s3_bucket_object" "bucket_public_keys_readme" {
+  bucket = "${aws_s3_bucket.bucket.id}"
+  key = "public-keys/README.txt"
+  content = "Drop here the ssh public keys of the instances you want to control"
+}
+
 resource "aws_security_group" "bastion_host_security_group" {
   description = "Enable SSH access to the bastion host from external via SSH port"
   vpc_id      = "${var.vpc_id}"
@@ -56,23 +64,9 @@ resource "aws_security_group" "bastion_host_security_group" {
   }
 
   egress {
-    from_port   = "${var.private_ssh_port}"
+    from_port   = "0"
     protocol    = "TCP"
-    to_port     = "${var.private_ssh_port}"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "TCP"
+    to_port     = "65535"
     cidr_blocks = ["0.0.0.0/0"]
   }
 

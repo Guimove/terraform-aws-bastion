@@ -7,6 +7,11 @@ variable "bucket_versioning" {
   description = "Enable bucket versioning or not"
 }
 
+variable "bucket_force_destroy" {
+  default     = false
+  description = "The bucket and all objects should be destroyed when using true"
+}
+
 variable "tags" {
   description = "A mapping of tags to assign"
   default     = {}

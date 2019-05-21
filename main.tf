@@ -171,8 +171,9 @@ resource "aws_lb" "bastion_lb" {
     "${var.elb_subnets}",
   ]
 
-  load_balancer_type = "network"
-  tags               = "${merge(var.tags)}"
+  load_balancer_type               = "network"
+  enable_cross_zone_load_balancing = "${var.cross_zone_lb}"
+  tags                             = "${merge(var.tags)}"
 }
 
 resource "aws_lb_target_group" "bastion_lb_target_group" {

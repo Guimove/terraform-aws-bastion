@@ -10,7 +10,7 @@ data "template_file" "user_data" {
 resource "aws_s3_bucket" "bucket" {
   bucket = "${var.bucket_name}"
   acl    = "bucket-owner-full-control"
-  
+
   force_destroy = "${var.bucket_force_destroy}"
 
   versioning {
@@ -47,13 +47,14 @@ resource "aws_s3_bucket" "bucket" {
 }
 
 resource "aws_s3_bucket_object" "bucket_public_keys_readme" {
-  bucket = "${aws_s3_bucket.bucket.id}"
-  key = "public-keys/README.txt"
+  bucket  = "${aws_s3_bucket.bucket.id}"
+  key     = "public-keys/README.txt"
   content = "Drop here the ssh public keys of the instances you want to control"
 }
 
 resource "aws_security_group" "bastion_host_security_group" {
   description = "Enable SSH access to the bastion host from external via SSH port"
+  name        = "${local.name_prefix}-host"
   vpc_id      = "${var.vpc_id}"
 
   ingress {
@@ -75,6 +76,7 @@ resource "aws_security_group" "bastion_host_security_group" {
 
 resource "aws_security_group" "private_instances_security_group" {
   description = "Enable SSH access to the Private instances from the bastion via SSH port"
+  name        = "${local.name_prefix}-priv-instances"
   vpc_id      = "${var.vpc_id}"
 
   ingress {
@@ -163,6 +165,7 @@ resource "aws_route53_record" "bastion_record_name" {
 
 resource "aws_lb" "bastion_lb" {
   internal = "${var.is_lb_private}"
+  name     = "${local.name_prefix}-lb"
 
   subnets = [
     "${var.elb_subnets}",
@@ -173,6 +176,7 @@ resource "aws_lb" "bastion_lb" {
 }
 
 resource "aws_lb_target_group" "bastion_lb_target_group" {
+  name        = "${local.name_prefix}-lb-target"
   port        = "${var.public_ssh_port}"
   protocol    = "TCP"
   vpc_id      = "${var.vpc_id}"

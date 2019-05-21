@@ -107,3 +107,8 @@ variable "private_ssh_port" {
   description = "Set the SSH port to use between the bastion and private instance"
   default     = 22
 }
+
+variable "cross_zone_lb" {
+  description = "Enable cross availability zone load balancing"
+  default     = false
+}

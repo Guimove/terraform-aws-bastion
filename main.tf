@@ -54,6 +54,7 @@ resource "aws_s3_bucket_object" "bucket_public_keys_readme" {
 
 resource "aws_security_group" "bastion_host_security_group" {
   description = "Enable SSH access to the bastion host from external via SSH port"
+  name        = "${local.name_prefix}-host"
   vpc_id      = "${var.vpc_id}"
 
   tags = "${merge(var.tags)}"

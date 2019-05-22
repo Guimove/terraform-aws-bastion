@@ -97,9 +97,7 @@ resource "aws_security_group_rule" "ingress_instances" {
   to_port     = "${var.public_ssh_port}"
   protocol    = "TCP"
 
-  security_groups = [
-    "${aws_security_group.bastion_host_security_group.id}",
-  ]
+  source_security_group_id = "${aws_security_group.bastion_host_security_group.id}"
 
   security_group_id = "${aws_security_group.private_instances_security_group.id}"
 }

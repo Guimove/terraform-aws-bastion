@@ -10,7 +10,7 @@ data "template_file" "user_data" {
 resource "aws_s3_bucket" "bucket" {
   bucket = "${var.bucket_name}"
   acl    = "bucket-owner-full-control"
-  
+
   force_destroy = "${var.bucket_force_destroy}"
 
   versioning {
@@ -47,47 +47,59 @@ resource "aws_s3_bucket" "bucket" {
 }
 
 resource "aws_s3_bucket_object" "bucket_public_keys_readme" {
-  bucket = "${aws_s3_bucket.bucket.id}"
-  key = "public-keys/README.txt"
+  bucket  = "${aws_s3_bucket.bucket.id}"
+  key     = "public-keys/README.txt"
   content = "Drop here the ssh public keys of the instances you want to control"
 }
 
 resource "aws_security_group" "bastion_host_security_group" {
   description = "Enable SSH access to the bastion host from external via SSH port"
+  name        = "${local.name_prefix}-host"
   vpc_id      = "${var.vpc_id}"
-
-  ingress {
-    from_port   = "${var.public_ssh_port}"
-    protocol    = "TCP"
-    to_port     = "${var.public_ssh_port}"
-    cidr_blocks = "${var.cidrs}"
-  }
-
-  egress {
-    from_port   = "0"
-    protocol    = "TCP"
-    to_port     = "65535"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
   tags = "${merge(var.tags)}"
 }
 
+resource "aws_security_group_rule" "ingress_bastion" {
+  description = "Incoming traffic to bastion"
+  type        = "ingress"
+  from_port   = "${var.public_ssh_port}"
+  to_port     = "${var.public_ssh_port}"
+  protocol    = "TCP"
+  cidr_blocks = "${var.cidrs}"
+
+  security_group_id = "${aws_security_group.bastion_host_security_group.id}"
+}
+
+resource "aws_security_group_rule" "egress_bastion" {
+  description = "Outgoing traffic from bastion to instances"
+  type        = "egress"
+  from_port   = "0"
+  to_port     = "65535"
+  protocol    = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = "${aws_security_group.bastion_host_security_group.id}"
+}
+
 resource "aws_security_group" "private_instances_security_group" {
   description = "Enable SSH access to the Private instances from the bastion via SSH port"
+  name        = "${local.name_prefix}-priv-instances"
   vpc_id      = "${var.vpc_id}"
 
-  ingress {
-    from_port = "${var.private_ssh_port}"
-    protocol  = "TCP"
-    to_port   = "${var.private_ssh_port}"
-
-    security_groups = [
-      "${aws_security_group.bastion_host_security_group.id}",
-    ]
-  }
-
   tags = "${merge(var.tags)}"
+}
+
+resource "aws_security_group_rule" "ingress_instances" {
+  description = "Incoming traffic from bastion"
+  type        = "ingress"
+  from_port   = "${var.public_ssh_port}"
+  to_port     = "${var.public_ssh_port}"
+  protocol    = "TCP"
+
+  source_security_group_id = "${aws_security_group.bastion_host_security_group.id}"
+
+  security_group_id = "${aws_security_group.private_instances_security_group.id}"
 }
 
 resource "aws_iam_role" "bastion_host_role" {
@@ -163,6 +175,7 @@ resource "aws_route53_record" "bastion_record_name" {
 
 resource "aws_lb" "bastion_lb" {
   internal = "${var.is_lb_private}"
+  name     = "${local.name_prefix}-lb"
 
   subnets = [
     "${var.elb_subnets}",
@@ -173,6 +186,7 @@ resource "aws_lb" "bastion_lb" {
 }
 
 resource "aws_lb_target_group" "bastion_lb_target_group" {
+  name        = "${local.name_prefix}-lb-target"
   port        = "${var.public_ssh_port}"
   protocol    = "TCP"
   vpc_id      = "${var.vpc_id}"

@@ -1,5 +1,11 @@
 locals {
-  tags = "${merge(var.tags, map("vpc", "${var.vpc_id}", "tenancy", "shared"))}"
+  tags = merge(
+    var.tags,
+    {
+      "vpc"     = var.vpc_id
+      "tenancy" = "shared"
+    },
+  )
 }
 
 data "aws_ami" "amazon-linux-2" {
@@ -18,10 +24,11 @@ data "aws_ami" "amazon-linux-2" {
 }
 
 data "template_file" "user_data" {
-  template = "${file("${path.module}/user_data.sh")}"
+  template = file("${path.module}/user_data.sh")
 
-  vars {
-    aws_region  = "${var.region}"
+  vars = {
+    aws_region  = var.region
     bucket_name = "${module.label.id}-access-logs"
   }
 }
+

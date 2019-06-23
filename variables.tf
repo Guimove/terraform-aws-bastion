@@ -1,54 +1,55 @@
 variable "namespace" {
-  type        = "string"
+  type        = string
   description = "Namespace, which could be your organization name, e.g. 'eg' or 'cp'"
 }
 
 variable "stage" {
-  type        = "string"
+  type        = string
   description = "Stage, e.g. 'prod', 'staging', 'dev', or 'test'"
 }
 
 variable "environment" {
-  type        = "string"
+  type        = string
   default     = ""
   description = "Environment, e.g. 'testing', 'UAT'"
 }
 
 variable "name" {
-  type        = "string"
+  type        = string
   default     = "app"
   description = "Solution name, e.g. 'app' or 'cluster'"
 }
 
 variable "delimiter" {
-  type        = "string"
+  type        = string
   default     = "-"
   description = "Delimiter to be used between `namespace`, `stage`, `name` and `attributes`"
 }
 
 variable "attributes" {
-  type        = "list"
+  type        = list(string)
   default     = []
   description = "Additional attributes (e.g. `1`)"
 }
 
 variable "tags" {
-  type        = "map"
+  type        = map(string)
   default     = {}
   description = "Additional tags (e.g. `{ BusinessUnit = \"XYZ\" }`"
 }
 
 variable "enabled" {
-  type        = "string"
+  type        = string
   description = "Whether to create the resources. Set to `false` to prevent the module from creating any resources"
   default     = "true"
 }
 
-variable "region" {}
+variable "region" {
+}
 
 variable "cidrs" {
   description = "List of CIDRs than can access to the bastion. Default : 0.0.0.0/0"
-  type        = "list"
+  type        = list(string)
 
   default = [
     "0.0.0.0/0",
@@ -113,12 +114,12 @@ variable "key_name" {
 }
 
 variable "lb_subnets" {
-  type        = "list"
+  type        = list(string)
   description = "List of subnet were the ELB will be deployed"
 }
 
 variable "auto_scaling_group_subnets" {
-  type        = "list"
+  type        = list(string)
   description = "List of subnet were the Auto Scalling Group will deploy the instances"
 }
 
@@ -141,3 +142,4 @@ variable "health_check_type" {
 variable "auto_scaling_enabled" {
   default = "false"
 }
+

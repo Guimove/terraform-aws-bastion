@@ -1,12 +1,12 @@
 module "label" {
-  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.1.6"
-  namespace  = "${var.namespace}"
-  name       = "${var.name}"
-  stage      = "${var.stage}"
-  delimiter  = "${var.delimiter}"
-  attributes = "${var.attributes}"
-  tags       = "${var.tags}"
-  enabled    = "${var.enabled}"
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.13.0"
+  namespace  = var.namespace
+  name       = var.name
+  stage      = var.stage
+  delimiter  = var.delimiter
+  attributes = var.attributes
+  tags       = var.tags
+  enabled    = var.enabled
 }
 
 resource "aws_s3_bucket" "bucket" {
@@ -14,48 +14,54 @@ resource "aws_s3_bucket" "bucket" {
   acl    = "bucket-owner-full-control"
 
   versioning {
-    enabled = "${var.bucket_versioning}"
+    enabled = var.bucket_versioning
   }
 
   lifecycle_rule {
     id      = "log"
-    enabled = "${var.log_auto_clean}"
+    enabled = var.log_auto_clean
 
     prefix = "logs/"
 
-    tags {
+    tags = {
       "rule"      = "log"
-      "autoclean" = "${var.log_auto_clean}"
+      "autoclean" = var.log_auto_clean
     }
 
     transition {
-      days          = "${var.log_standard_ia_days}"
+      days          = var.log_standard_ia_days
       storage_class = "STANDARD_IA"
     }
 
     transition {
-      days          = "${var.log_glacier_days}"
+      days          = var.log_glacier_days
       storage_class = "GLACIER"
     }
 
     expiration {
-      days = "${var.log_expiry_days}"
+      days = var.log_expiry_days
     }
   }
 
-  tags = "${local.tags}"
+  tags = local.tags
+}
+
+resource "aws_s3_bucket_object" "bucket_public_keys_readme" {
+  bucket  = aws_s3_bucket.bucket.id
+  key     = "public-keys/README.txt"
+  content = "Drop here the ssh public keys of the instances you want to control"
 }
 
 resource "aws_security_group" "private_instances_security_group" {
-  name        = "${module.label.id}"
+  name        = module.label.id
   description = "Enable SSH access to the bastion host from external via SSH port"
-  vpc_id      = "${var.vpc_id}"
+  vpc_id      = var.vpc_id
 
   ingress {
-    from_port   = "${var.ssh_port}"
+    from_port   = var.ssh_port
     protocol    = "TCP"
-    to_port     = "${var.ssh_port}"
-    cidr_blocks = "${var.cidrs}"
+    to_port     = var.ssh_port
+    cidr_blocks = var.cidrs
   }
 
   egress {
@@ -65,12 +71,12 @@ resource "aws_security_group" "private_instances_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = "${local.tags}"
+  tags = local.tags
 }
 
 resource "aws_iam_role" "host_role" {
   path        = "/"
-  name        = "${module.label.id}"
+  name        = module.label.id
   description = "Role assigned to bastion instance"
 
   assume_role_policy = <<EOF
@@ -91,11 +97,12 @@ resource "aws_iam_role" "host_role" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy" "host_role_policy" {
-  role = "${aws_iam_role.host_role.id}"
-  name = "${module.label.id}"
+  role = aws_iam_role.host_role.id
+  name = module.label.id
 
   policy = <<EOF
 {
@@ -127,85 +134,85 @@ resource "aws_iam_role_policy" "host_role_policy" {
   ]
 }
 EOF
+
 }
 
 resource "aws_route53_record" "record_name" {
-  name    = "${var.lb_record_name}"
-  zone_id = "${var.domain_name}"
-  type    = "A"
-  count   = "${var.create_dns_record}"
+name    = var.lb_record_name
+zone_id = var.domain_name
+type    = "A"
+count   = var.create_dns_record
 
-  alias {
-    evaluate_target_health = true
-    name                   = "${aws_lb.bastion_lb.dns_name}"
-    zone_id                = "${aws_lb.bastion_lb.zone_id}"
-  }
+alias {
+evaluate_target_health = true
+name                   = aws_lb.bastion_lb.dns_name
+zone_id                = aws_lb.bastion_lb.zone_id
+}
 }
 
 resource "aws_lb" "bastion_lb" {
-  name     = "${module.label.id}"
-  internal = "${var.is_lb_private}"
+name     = module.label.id
+internal = var.is_lb_private
 
-  subnets = [
-    "${var.lb_subnets}",
-  ]
+subnets = var.lb_subnets
 
-  load_balancer_type = "network"
-  tags               = "${local.tags}"
+load_balancer_type = "network"
+tags               = local.tags
 }
 
 resource "aws_lb_target_group" "lb_target_group" {
-  name        = "${module.label.id}"
-  port        = "${var.ssh_port}"
-  protocol    = "TCP"
-  vpc_id      = "${var.vpc_id}"
-  target_type = "instance"
+name        = module.label.id
+port        = var.ssh_port
+protocol    = "TCP"
+vpc_id      = var.vpc_id
+target_type = "instance"
 
-  health_check {
-    port     = "traffic-port"
-    protocol = "TCP"
-  }
+health_check {
+port     = "traffic-port"
+protocol = "TCP"
+}
 
-  tags = "${local.tags}"
+tags = local.tags
 }
 
 resource "aws_lb_listener" "lb_listener_22" {
-  "default_action" {
-    target_group_arn = "${aws_lb_target_group.lb_target_group.arn}"
-    type             = "forward"
-  }
+default_action {
+target_group_arn = aws_lb_target_group.lb_target_group.arn
+type             = "forward"
+}
 
-  load_balancer_arn = "${aws_lb.bastion_lb.arn}"
-  port              = "${var.ssh_port}"
-  protocol          = "TCP"
+load_balancer_arn = aws_lb.bastion_lb.arn
+port              = var.ssh_port
+protocol          = "TCP"
 }
 
 resource "aws_iam_instance_profile" "bastion_host_profile" {
-  role = "${aws_iam_role.host_role.name}"
-  path = "/"
+role = aws_iam_role.host_role.name
+path = "/"
 }
 
 module "autoscale_group" {
-  source = "git::https://github.com/cloudposse/terraform-aws-ec2-autoscale-group.git?ref=master"
+source = "git::https://github.com/rverma-nikiai/terraform-aws-ec2-autoscale-group.git?ref=master"
 
-  namespace  = "${var.namespace}"
-  stage      = "${var.stage}"
-  name       = "${var.name}"
-  attributes = "${var.attributes}"
+namespace  = var.namespace
+stage      = var.stage
+name       = var.name
+attributes = var.attributes
 
-  image_id                     = "${data.aws_ami.amazon-linux-2.id}"
-  instance_type                = "${var.instance_type}"
-  security_group_ids           = ["${aws_security_group.private_instances_security_group.id}"]
-  subnet_ids                   = "${var.lb_subnets}"
-  health_check_type            = "${var.health_check_type}"
-  min_size                     = "${var.min_size}"
-  max_size                     = "${var.max_size}"
-  associate_public_ip_address  = false
-  user_data_base64             = "${base64encode(data.template_file.user_data.rendered)}"
-  iam_instance_profile_name    = "${aws_iam_instance_profile.bastion_host_profile.name}"
-  key_name                     = "${var.key_name}"
-  target_group_arns            = ["${aws_lb_target_group.lb_target_group.arn}"]
-  enabled                      = "true"
-  tags                         = "${local.tags}"
-  autoscaling_policies_enabled = "${var.auto_scaling_enabled}"
+image_id                     = data.aws_ami.amazon-linux-2.id
+instance_type                = var.instance_type
+security_group_ids           = [aws_security_group.private_instances_security_group.id]
+subnet_ids                   = var.lb_subnets
+health_check_type            = var.health_check_type
+min_size                     = var.min_size
+max_size                     = var.max_size
+associate_public_ip_address  = false
+user_data_base64             = base64encode(data.template_file.user_data.rendered)
+iam_instance_profile_name    = aws_iam_instance_profile.bastion_host_profile.name
+key_name                     = var.key_name
+target_group_arns            = [aws_lb_target_group.lb_target_group.arn]
+enabled                      = "true"
+tags                         = local.tags
+autoscaling_policies_enabled = var.auto_scaling_enabled
 }
+

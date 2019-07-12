@@ -171,3 +171,6 @@ cat > ~/mycron << EOF
 EOF
 crontab ~/mycron
 rm ~/mycron
+
+# Allow user supplied userdata code
+${additional_userdata}

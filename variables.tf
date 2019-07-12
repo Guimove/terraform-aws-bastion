@@ -145,5 +145,4 @@ variable "auto_scaling_enabled" {
 
 variable "user_data" {
   default = ""
-  default = "true"
 }

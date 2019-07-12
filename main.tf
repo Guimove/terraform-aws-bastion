@@ -64,11 +64,19 @@ resource "aws_security_group" "private_instances_security_group" {
     cidr_blocks = var.cidrs
   }
 
+  ingress {
+    from_port   = 8888
+    protocol    = "TCP"
+    to_port     = 8888
+    cidr_blocks = var.cidrs
+  }
+
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    cidr_blocks = [
+    "0.0.0.0/0"]
   }
 
   tags = local.tags
@@ -138,81 +146,77 @@ EOF
 }
 
 resource "aws_route53_record" "record_name" {
-name    = var.lb_record_name
-zone_id = var.domain_name
-type    = "A"
-count   = var.create_dns_record
+  name    = var.lb_record_name
+  zone_id = var.domain_name
+  type    = "A"
+  count   = var.create_dns_record
 
-alias {
-evaluate_target_health = true
-name                   = aws_lb.bastion_lb.dns_name
-zone_id                = aws_lb.bastion_lb.zone_id
-}
+  alias {
+    evaluate_target_health = true
+    name                   = aws_lb.bastion_lb.dns_name
+    zone_id                = aws_lb.bastion_lb.zone_id
+  }
 }
 
 resource "aws_lb" "bastion_lb" {
-name     = module.label.id
-internal = var.is_lb_private
-
-subnets = var.lb_subnets
-
-load_balancer_type = "network"
-tags               = local.tags
+  name               = module.label.id
+  internal           = var.is_lb_private
+  subnets            = var.lb_subnets
+  load_balancer_type = "network"
+  tags               = local.tags
 }
 
 resource "aws_lb_target_group" "lb_target_group" {
-name        = module.label.id
-port        = var.ssh_port
-protocol    = "TCP"
-vpc_id      = var.vpc_id
-target_type = "instance"
+  name        = module.label.id
+  port        = var.ssh_port
+  protocol    = "TCP"
+  vpc_id      = var.vpc_id
+  target_type = "instance"
 
-health_check {
-port     = "traffic-port"
-protocol = "TCP"
-}
+  health_check {
+    port     = "traffic-port"
+    protocol = "TCP"
+  }
 
-tags = local.tags
+  tags = local.tags
 }
 
 resource "aws_lb_listener" "lb_listener_22" {
-default_action {
-target_group_arn = aws_lb_target_group.lb_target_group.arn
-type             = "forward"
-}
+  default_action {
+    target_group_arn = aws_lb_target_group.lb_target_group.arn
+    type             = "forward"
+  }
 
-load_balancer_arn = aws_lb.bastion_lb.arn
-port              = var.ssh_port
-protocol          = "TCP"
+  load_balancer_arn = aws_lb.bastion_lb.arn
+  port              = var.ssh_port
+  protocol          = "TCP"
 }
 
 resource "aws_iam_instance_profile" "bastion_host_profile" {
-role = aws_iam_role.host_role.name
-path = "/"
+  role = aws_iam_role.host_role.name
+  path = "/"
 }
 
 module "autoscale_group" {
-source = "git::https://github.com/rverma-nikiai/terraform-aws-ec2-autoscale-group.git?ref=master"
-
-namespace  = var.namespace
-stage      = var.stage
-name       = var.name
-attributes = var.attributes
-
-image_id                     = data.aws_ami.amazon-linux-2.id
-instance_type                = var.instance_type
-security_group_ids           = [aws_security_group.private_instances_security_group.id]
-subnet_ids                   = var.lb_subnets
-health_check_type            = var.health_check_type
-min_size                     = var.min_size
-max_size                     = var.max_size
-associate_public_ip_address  = false
-user_data_base64             = base64encode(data.template_file.user_data.rendered)
-iam_instance_profile_name    = aws_iam_instance_profile.bastion_host_profile.name
-key_name                     = var.key_name
-target_group_arns            = [aws_lb_target_group.lb_target_group.arn]
-enabled                      = "true"
-tags                         = local.tags
-autoscaling_policies_enabled = var.auto_scaling_enabled
+  source                       = "git::https://github.com/rverma-nikiai/terraform-aws-ec2-autoscale-group.git?ref=master"
+  namespace                    = var.namespace
+  stage                        = var.stage
+  name                         = var.name
+  attributes                   = var.attributes
+  image_id                     = data.aws_ami.amazon-linux-2.id
+  instance_type                = var.instance_type
+  security_group_ids           = [aws_security_group.private_instances_security_group.id]
+  subnet_ids                   = var.lb_subnets
+  health_check_type            = var.health_check_type
+  min_size                     = var.min_size
+  max_size                     = var.max_size
+  associate_public_ip_address  = false
+  user_data_base64             = base64encode(data.template_file.user_data.rendered)
+  iam_instance_profile_name    = aws_iam_instance_profile.bastion_host_profile.name
+  key_name                     = var.key_name
+  target_group_arns            = [aws_lb_target_group.lb_target_group.arn]
+  tags                         = local.tags
+  autoscaling_policies_enabled = var.auto_scaling_enabled
+  associate_public_ip_address  = "true"
 }
 

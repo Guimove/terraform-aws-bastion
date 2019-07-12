@@ -2,8 +2,8 @@ locals {
   tags = merge(
     var.tags,
     {
-      "vpc"     = var.vpc_id
-      "tenancy" = "shared"
+      vpc     = var.vpc_id
+      tenancy = "shared"
     },
   )
 }
@@ -27,8 +27,9 @@ data "template_file" "user_data" {
   template = file("${path.module}/user_data.sh")
 
   vars = {
-    aws_region  = var.region
-    bucket_name = "${module.label.id}-access-logs"
+    aws_region          = var.region
+    bucket_name         = "${module.label.id}-access-logs"
+    additional_userdata = var.user_data
   }
 }
 

@@ -210,13 +210,12 @@ module "autoscale_group" {
   health_check_type            = var.health_check_type
   min_size                     = var.min_size
   max_size                     = var.max_size
-  associate_public_ip_address  = false
+  associate_public_ip_address  = true
   user_data_base64             = base64encode(data.template_file.user_data.rendered)
   iam_instance_profile_name    = aws_iam_instance_profile.bastion_host_profile.name
   key_name                     = var.key_name
   target_group_arns            = [aws_lb_target_group.lb_target_group.arn]
   tags                         = local.tags
   autoscaling_policies_enabled = var.auto_scaling_enabled
-  associate_public_ip_address  = "true"
 }
 

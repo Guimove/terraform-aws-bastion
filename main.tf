@@ -249,7 +249,7 @@ module "autoscale_group" {
   user_data_base64             = base64encode(data.template_file.user_data.rendered)
   iam_instance_profile_name    = aws_iam_instance_profile.bastion_host_profile.name
   key_name                     = var.key_name
-  target_group_arns            = compact(list(aws_lb_target_group.lb_target_group.arn, var.elastic_ip ? aws_lb_target_group.lb_target_group_proxy[0].arn : ""))
+  target_group_arns            = compact(concat(aws_lb_target_group.lb_target_group_proxy.*.arn, aws_lb_target_group.lb_target_group.arn))
   tags                         = local.tags
   autoscaling_policies_enabled = var.auto_scaling_enabled
 }

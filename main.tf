@@ -164,10 +164,13 @@ resource "aws_route53_record" "record_name" {
 resource "aws_lb" "bastion_lb" {
   name               = module.label.id
   internal           = var.is_lb_private
-  subnets            = var.lb_subnets
   load_balancer_type = "network"
   tags               = local.tags
-  allocation_id      = var.elastic_ip
+
+  subnet_mapping {
+    subnet_id     = var.lb_subnets[0]
+    allocation_id = var.elastic_ip
+  }
 }
 
 resource "aws_lb_target_group" "lb_target_group" {
@@ -222,7 +225,7 @@ module "autoscale_group" {
   image_id                     = data.aws_ami.amazon-linux-2.id
   instance_type                = var.instance_type
   security_group_ids           = [aws_security_group.private_instances_security_group.id]
-  subnet_ids                   = var.lb_subnets
+  subnet_ids                   = [var.lb_subnets[0]]
   health_check_type            = var.health_check_type
   min_size                     = var.min_size
   max_size                     = var.max_size

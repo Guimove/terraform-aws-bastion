@@ -143,6 +143,6 @@ variable "auto_scaling_enabled" {
   default = "false"
 }
 
-variable "user_data" {
+variable "userdata" {
   default = ""
 }

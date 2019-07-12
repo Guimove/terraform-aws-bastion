@@ -29,7 +29,7 @@ data "template_file" "user_data" {
   vars = {
     aws_region          = var.region
     bucket_name         = "${module.label.id}-access-logs"
-    additional_userdata = var.user_data
+    additional_userdata = var.userdata
   }
 }
 

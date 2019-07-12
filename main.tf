@@ -188,6 +188,22 @@ resource "aws_lb_target_group" "lb_target_group" {
   tags = local.tags
 }
 
+resource "aws_lb_target_group" "lb_target_group_proxy" {
+  count       = var.enable_proxy ? 1 : 0
+  name        = "${module.label.id}-proxy"
+  port        = 8888
+  protocol    = "TCP"
+  vpc_id      = var.vpc_id
+  target_type = "instance"
+
+  health_check {
+    port     = "traffic-port"
+    protocol = "TCP"
+  }
+
+  tags = local.tags
+}
+
 resource "aws_lb_listener" "lb_listener_22" {
   default_action {
     target_group_arn = aws_lb_target_group.lb_target_group.arn
@@ -202,7 +218,7 @@ resource "aws_lb_listener" "lb_listener_22" {
 resource "aws_lb_listener" "lb_listener_proxy" {
   count = var.enable_proxy ? 1 : 0
   default_action {
-    target_group_arn = aws_lb_target_group.lb_target_group.arn
+    target_group_arn = aws_lb_target_group.lb_target_group_proxy[count.index].arn
     type             = "forward"
   }
 

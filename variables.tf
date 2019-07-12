@@ -146,3 +146,11 @@ variable "auto_scaling_enabled" {
 variable "userdata" {
   default = ""
 }
+
+variable "enable_proxy" {
+  default = false
+}
+
+variable "elastic_ip" {
+  default = ""
+}

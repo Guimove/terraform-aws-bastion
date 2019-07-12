@@ -167,6 +167,7 @@ resource "aws_lb" "bastion_lb" {
   subnets            = var.lb_subnets
   load_balancer_type = "network"
   tags               = local.tags
+  allocation_id      = var.elastic_ip
 }
 
 resource "aws_lb_target_group" "lb_target_group" {
@@ -193,10 +194,6 @@ resource "aws_lb_listener" "lb_listener_22" {
   load_balancer_arn = aws_lb.bastion_lb.arn
   port              = var.ssh_port
   protocol          = "TCP"
-}
-
-variable "enable_proxy" {
-  default = false
 }
 
 resource "aws_lb_listener" "lb_listener_proxy" {

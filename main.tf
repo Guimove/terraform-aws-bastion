@@ -199,7 +199,7 @@ variable "enable_proxy" {
   default = false
 }
 
-resource "aws_lb_listener" "lb_listener_22" {
+resource "aws_lb_listener" "lb_listener_proxy" {
   count = var.enable_proxy ? 1 : 0
   default_action {
     target_group_arn = aws_lb_target_group.lb_target_group.arn

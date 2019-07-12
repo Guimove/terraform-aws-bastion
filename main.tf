@@ -64,11 +64,14 @@ resource "aws_security_group" "private_instances_security_group" {
     cidr_blocks = var.cidrs
   }
 
-  ingress {
-    from_port   = 8888
-    protocol    = "TCP"
-    to_port     = 8888
-    cidr_blocks = var.cidrs
+  dynamic "ingress" {
+    for_each = var.enable_proxy ? [1] : []
+    content {
+      from_port   = 8888
+      protocol    = "TCP"
+      to_port     = 8888
+      cidr_blocks = var.cidrs
+    }
   }
 
   egress {
@@ -189,6 +192,22 @@ resource "aws_lb_listener" "lb_listener_22" {
 
   load_balancer_arn = aws_lb.bastion_lb.arn
   port              = var.ssh_port
+  protocol          = "TCP"
+}
+
+variable "enable_proxy" {
+  default = false
+}
+
+resource "aws_lb_listener" "lb_listener_22" {
+  count = var.enable_proxy ? 1 : 0
+  default_action {
+    target_group_arn = aws_lb_target_group.lb_target_group.arn
+    type             = "forward"
+  }
+
+  load_balancer_arn = aws_lb.bastion_lb.arn
+  port              = 8888
   protocol          = "TCP"
 }
 

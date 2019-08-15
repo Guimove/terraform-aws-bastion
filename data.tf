@@ -8,3 +8,4 @@ data "aws_ami" "amazon-linux-2" {
     values = ["x86_64"]
   }
 }
+

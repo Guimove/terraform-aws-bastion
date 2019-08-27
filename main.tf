@@ -1,7 +1,7 @@
 data "template_file" "user_data" {
   template = "${file("${path.module}/user_data.sh")}"
 
-  vars {
+  vars = {
     aws_region  = "${var.region}"
     bucket_name = "${var.bucket_name}"
   }
@@ -21,9 +21,9 @@ resource "aws_s3_bucket" "bucket" {
 
     prefix = "logs/"
 
-    tags {
-      "rule"      = "log"
-      "autoclean" = "${var.log_auto_clean}"
+    tags  = {
+      rule      = "log"
+      autoclean = "${var.log_auto_clean}"
     }
 
     transition {
@@ -170,9 +170,7 @@ resource "aws_route53_record" "bastion_record_name" {
 resource "aws_lb" "bastion_lb" {
   internal = "${var.is_lb_private}"
 
-  subnets = [
-    "${var.elb_subnets}",
-  ]
+  subnets =  "${var.elb_subnets}"
 
   load_balancer_type = "network"
   tags               = "${merge(var.tags)}"
@@ -193,7 +191,7 @@ resource "aws_lb_target_group" "bastion_lb_target_group" {
 }
 
 resource "aws_lb_listener" "bastion_lb_listener_22" {
-  "default_action" {
+  default_action {
     target_group_arn = "${aws_lb_target_group.bastion_lb_target_group.arn}"
     type             = "forward"
   }
@@ -235,9 +233,7 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   min_size             = "${var.bastion_instance_count}"
   desired_capacity     = "${var.bastion_instance_count}"
 
-  vpc_zone_identifier = [
-    "${var.auto_scaling_group_subnets}",
-  ]
+  vpc_zone_identifier = "${var.auto_scaling_group_subnets}"
 
   default_cooldown          = 180
   health_check_grace_period = 180
@@ -251,10 +247,10 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
     "OldestLaunchConfiguration",
   ]
 
-  tags = ["${concat(
-      list(map("key", "Name", "value", "ASG-${aws_launch_configuration.bastion_launch_configuration.name}", "propagate_at_launch", true)),
-      local.tags_asg_format
-   )}"]
+  #tags = ["${concat(
+  #    list(map("key", "Name", "value", "ASG-${aws_launch_configuration.bastion_launch_configuration.name}", "propagate_at_launch", true)),
+  #    local.tags_asg_format
+  # )}"]
 
   lifecycle {
     create_before_destroy = true

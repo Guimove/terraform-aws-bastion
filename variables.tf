@@ -15,14 +15,15 @@ variable "bucket_force_destroy" {
 variable "tags" {
   description = "A mapping of tags to assign"
   default     = {}
-  type        = "map"
+  type        = map(string)
 }
 
-variable "region" {}
+variable "region" {
+}
 
 variable "cidrs" {
   description = "List of CIDRs than can access to the bastion. Default : 0.0.0.0/0"
-  type        = "list"
+  type        = list(string)
 
   default = [
     "0.0.0.0/0",
@@ -57,12 +58,12 @@ variable "bastion_launch_configuration_name" {
 }
 
 variable "elb_subnets" {
-  type        = "list"
+  type        = list(string)
   description = "List of subnet were the ELB will be deployed"
 }
 
 variable "auto_scaling_group_subnets" {
-  type        = "list"
+  type        = list(string)
   description = "List of subnet were the Auto Scalling Group will deploy the instances"
 }
 
@@ -107,3 +108,4 @@ variable "private_ssh_port" {
   description = "Set the SSH port to use between the bastion and private instance"
   default     = 22
 }
+

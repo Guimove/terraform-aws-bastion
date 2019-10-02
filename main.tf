@@ -166,7 +166,7 @@ resource "aws_route53_record" "bastion_record_name" {
   name    = var.bastion_record_name
   zone_id = var.hosted_zone_name
   type    = "A"
-  count   = var.create_dns_record
+  count   = var.create_dns_record ? 1 : 0
 
   alias {
     evaluate_target_health = true

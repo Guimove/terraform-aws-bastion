@@ -87,7 +87,10 @@ module "bastion" {
 | Name | Description |
 |------|-------------|
 | bucket_name |  |
-| elb_ip |  |
+| bucket_name | The name of the bucket where logs are sent |
+| elb_ip | The ELB DNS Name for the Bastion Host instances |
+| bastion_host_security_group_id | The security group ID of the Bastion Host |
+| private_instances_security_group | The security group ID of the the private instances that allow Bastion SSH ingress |
 
 Known issues
 ------------

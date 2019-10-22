@@ -59,6 +59,7 @@ module "bastion" {
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | auto_scaling_group_subnets | List of subnet were the Auto Scalling Group will deploy the instances | list | - | yes |
+| allow_ssh_commands | Allows the SSH user to execute one-off commands. Pass 'True' to enable. Warning: These commands are not logged and increase the vulnerability of the system. Use at your own discretion. | string | "" | no |
 | bastion_amis |  | map | `<map>` | no |
 | bastion_host_key_pair | Select the key pair to use to launch the bastion host | string | - | yes |
 | bastion_instance_count | Count of bastion instance created on VPC | string | `1` | no |

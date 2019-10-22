@@ -5,6 +5,7 @@ data "template_file" "user_data" {
     aws_region              = var.region
     bucket_name             = var.bucket_name
     extra_user_data_content = var.extra_user_data_content
+    allow_ssh_commands      = var.allow_ssh_commands
   }
 }
 

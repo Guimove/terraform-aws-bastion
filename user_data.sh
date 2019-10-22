@@ -45,12 +45,16 @@ if [[ -z $SSH_ORIGINAL_COMMAND ]]; then
 
 else
 
-  # The "script" program could be circumvented with some commands (e.g. bash, nc).
-  # Therefore, I intentionally prevent users from supplying commands.
+  # If the module consumer wants to allow remote commands (for ansible or other) then allow that command through.
+  if [ "${allow_ssh_commands}" == "True" ]; then
+    exec /bin/bash -c "$SSH_ORIGINAL_COMMAND"
+  else
+    # The "script" program could be circumvented with some commands (e.g. bash, nc).
+    # Therefore, I intentionally prevent users from supplying commands.
 
-  echo "This bastion supports interactive sessions only. Do not supply a command"
-  exit 1
-
+    echo "This bastion supports interactive sessions only. Do not supply a command"
+    exit 1
+  end
 fi
 
 EOF

@@ -54,7 +54,7 @@ else
 
     echo "This bastion supports interactive sessions only. Do not supply a command"
     exit 1
-  end
+  fi
 fi
 
 EOF

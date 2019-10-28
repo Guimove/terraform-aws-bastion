@@ -36,7 +36,6 @@ module "bastion" {
   "bucket_name" = "my_famous_bucket_name"
   "region" = "eu-west-1"
   "vpc_id" = "my_vpc_id"
-  "is_lb_private" = "true|false"
   "bastion_host_key_pair" = "my_key_pair"
   "hosted_zone_name" = "my.hosted.zone.name."
   "bastion_record_name" = "bastion.my.hosted.zone.name."
@@ -67,10 +66,11 @@ module "bastion" {
 | bucket_force_destroy | On destroy, bucket and all objects should be destroyed when using true | string | false | no |
 | bucket_versioning | Enable bucket versioning or not | string | true | no |
 | cidrs | List of CIDRs than can access to the bastion. Default : 0.0.0.0/0 | list | `<list>` | no |
-| create_dns_record | Choose if you want to create a record name for the bastion (LB). If true 'hosted_zone_name' and 'bastion_record_name' are mandatory | integer | - | yes |
+| create_dns_record | Choose if you want to create a record name for the bastion (LB). If true 'hosted_zone_name' and 'bastion_record_name' are mandatory and 'create_lb' should be true | integer | - | yes |
 | elb_subnets | List of subnet were the ELB will be deployed | list | - | yes |
 | hosted_zone_name | Name of the hosted zone were we'll register the bastion DNS name | string | `` | no |
-| is_lb_private | If TRUE the load balancer scheme will be "internal" else "internet-facing" | string | - | yes |
+| create_lb | "Choose if you want to create a load balancer for the bastion. If true, you can setup DNS and 'is_lb_private', 'elb_subnets', 'auto_scaling_group_subnets' are mandatory" | bool | false | no
+| is_lb_private | If TRUE the load balancer scheme will be "internal" else "internet-facing" | string | false | no |
 | log_auto_clean | Enable or not the lifecycle | string | `false` | no |
 | log_expiry_days | Number of days before logs expiration | string | `90` | no |
 | log_glacier_days | Number of days before moving logs to Glacier | string | `60` | no |

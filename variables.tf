@@ -72,7 +72,6 @@ variable "elb_subnets" {
 variable "auto_scaling_group_subnets" {
   type        = list(string)
   description = "List of subnet were the Auto Scalling Group will deploy the instances"
-  default     = []
 }
 
 variable "associate_public_ip_address" {

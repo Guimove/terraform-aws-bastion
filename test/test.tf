@@ -11,6 +11,11 @@ module "bastion" {
     toto        = "tate"
   }
 
+  auto_scaling_group_subnets =  [
+    "subnet-id1a",
+    "subnet-id1b"
+  ]
+
   create_lb         = false
   create_dns_record = false
 }

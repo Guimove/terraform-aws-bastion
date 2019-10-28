@@ -241,7 +241,6 @@ resource "aws_launch_configuration" "bastion_launch_configuration" {
 
 resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   name                 = "ASG-${aws_launch_configuration.bastion_launch_configuration.name}"
-  count                = var.create_lb ? 1 : 0
   launch_configuration = aws_launch_configuration.bastion_launch_configuration.name
   max_size             = var.bastion_instance_count
   min_size             = var.bastion_instance_count
@@ -253,9 +252,9 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   health_check_grace_period = 180
   health_check_type         = "EC2"
 
-  target_group_arns = [
+  target_group_arns = var.create_lb ? [
     aws_lb_target_group.bastion_lb_target_group[0].arn,
-  ]
+  ] : []
 
   termination_policies = [
     "OldestLaunchConfiguration",

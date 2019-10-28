@@ -66,13 +66,13 @@ variable "bastion_launch_configuration_name" {
 variable "elb_subnets" {
   type        = list(string)
   description = "List of subnet were the ELB will be deployed"
-  default     = [""]
+  default     = []
 }
 
 variable "auto_scaling_group_subnets" {
   type        = list(string)
   description = "List of subnet were the Auto Scalling Group will deploy the instances"
-  default     = [""]
+  default     = []
 }
 
 variable "associate_public_ip_address" {

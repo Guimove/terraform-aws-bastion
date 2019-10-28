@@ -166,18 +166,19 @@ resource "aws_route53_record" "bastion_record_name" {
   name    = var.bastion_record_name
   zone_id = var.hosted_zone_name
   type    = "A"
-  count   = var.create_dns_record ? 1 : 0
+  count   = var.create_dns_record && var.create_lb ? 1 : 0
 
   alias {
     evaluate_target_health = true
-    name                   = aws_lb.bastion_lb.dns_name
-    zone_id                = aws_lb.bastion_lb.zone_id
+    name                   = aws_lb.bastion_lb[0].dns_name
+    zone_id                = aws_lb.bastion_lb[0].zone_id
   }
 }
 
 resource "aws_lb" "bastion_lb" {
   internal = var.is_lb_private
   name     = "${local.name_prefix}-lb"
+  count    = var.create_lb ? 1 : 0
 
   subnets = var.elb_subnets
 
@@ -187,6 +188,7 @@ resource "aws_lb" "bastion_lb" {
 
 resource "aws_lb_target_group" "bastion_lb_target_group" {
   name        = "${local.name_prefix}-lb-target"
+  count       = var.create_lb ? 1 : 0
   port        = var.public_ssh_port
   protocol    = "TCP"
   vpc_id      = var.vpc_id
@@ -201,12 +203,13 @@ resource "aws_lb_target_group" "bastion_lb_target_group" {
 }
 
 resource "aws_lb_listener" "bastion_lb_listener_22" {
+  count              = var.create_lb ? 1 : 0
   default_action {
-    target_group_arn = aws_lb_target_group.bastion_lb_target_group.arn
+    target_group_arn = aws_lb_target_group.bastion_lb_target_group[0].arn
     type             = "forward"
   }
 
-  load_balancer_arn = aws_lb.bastion_lb.arn
+  load_balancer_arn = aws_lb.bastion_lb[0].arn
   port              = var.public_ssh_port
   protocol          = "TCP"
 }
@@ -238,6 +241,7 @@ resource "aws_launch_configuration" "bastion_launch_configuration" {
 
 resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   name                 = "ASG-${aws_launch_configuration.bastion_launch_configuration.name}"
+  count                = var.create_lb ? 1 : 0
   launch_configuration = aws_launch_configuration.bastion_launch_configuration.name
   max_size             = var.bastion_instance_count
   min_size             = var.bastion_instance_count
@@ -250,7 +254,7 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   health_check_type         = "EC2"
 
   target_group_arns = [
-    aws_lb_target_group.bastion_lb_target_group.arn,
+    aws_lb_target_group.bastion_lb_target_group[0].arn,
   ]
 
   termination_policies = [

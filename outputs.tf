@@ -3,7 +3,7 @@ output "bucket_name" {
 }
 
 output "elb_ip" {
-  value = aws_lb.bastion_lb.dns_name
+  value = var.create_lb ? aws_lb.bastion_lb[0].dns_name : ""
 }
 
 output "bastion_host_security_group" {

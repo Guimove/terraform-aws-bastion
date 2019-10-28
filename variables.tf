@@ -30,8 +30,14 @@ variable "cidrs" {
   ]
 }
 
+variable "create_lb" {
+  description = "Choose if you want to create a load balancer for the bastion. If true, you can setup DNS and 'is_lb_private', 'elb_subnets', 'auto_scaling_group_subnets' are mandatory"
+  type        = bool
+}
+
 variable "is_lb_private" {
   description = "If TRUE the load balancer scheme will be \"internal\" else \"internet-facing\""
+  default     = true
 }
 
 variable "vpc_id" {
@@ -60,11 +66,13 @@ variable "bastion_launch_configuration_name" {
 variable "elb_subnets" {
   type        = list(string)
   description = "List of subnet were the ELB will be deployed"
+  default     = [""]
 }
 
 variable "auto_scaling_group_subnets" {
   type        = list(string)
   description = "List of subnet were the Auto Scalling Group will deploy the instances"
+  default     = [""]
 }
 
 variable "associate_public_ip_address" {
@@ -76,7 +84,7 @@ variable "bastion_instance_count" {
 }
 
 variable "create_dns_record" {
-  description = "Choose if you want to create a record name for the bastion (LB). If true 'hosted_zone_name' and 'bastion_record_name' are mandatory "
+  description = "Choose if you want to create a record name for the bastion (LB). If true 'hosted_zone_name' and 'bastion_record_name' are mandatory and 'create_lb' should be true"
 }
 
 variable "log_auto_clean" {

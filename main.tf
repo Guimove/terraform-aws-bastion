@@ -220,7 +220,7 @@ resource "aws_iam_instance_profile" "bastion_host_profile" {
 
 resource "aws_launch_configuration" "bastion_launch_configuration" {
   name_prefix                 = var.bastion_launch_configuration_name
-  image_id                    = data.aws_ami.amazon-linux-2.id
+  image_id                    = var.bastion_ami != "" ? var.bastion_ami : data.aws_ami.amazon-linux-2.id
   instance_type               = "t2.nano"
   associate_public_ip_address = var.associate_public_ip_address
   enable_monitoring           = true

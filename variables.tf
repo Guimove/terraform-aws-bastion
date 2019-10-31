@@ -53,8 +53,15 @@ variable "bastion_record_name" {
 }
 
 variable "bastion_launch_configuration_name" {
+  type        = string
   description = "Bastion Launch configuration Name, will also be used for the ASG"
   default     = "lc"
+}
+
+variable "bastion_ami" {
+  type        = string
+  description = "The AMI that the Bastion Host will use."
+  default     = ""
 }
 
 variable "elb_subnets" {

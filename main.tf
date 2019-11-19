@@ -233,6 +233,7 @@ resource "aws_launch_configuration" "bastion_launch_configuration" {
 
   lifecycle {
     create_before_destroy = true
+    ignore_changes = [ "user_data" ]
   }
 }
 

@@ -164,7 +164,7 @@ EOF
 
 resource "aws_route53_record" "bastion_record_name" {
   name    = var.bastion_record_name
-  zone_id = var.hosted_zone_name
+  zone_id = var.hosted_zone_id
   type    = "A"
   count   = var.create_dns_record ? 1 : 0
 

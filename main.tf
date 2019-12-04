@@ -121,65 +121,65 @@ resource "aws_security_group_rule" "ingress_instances" {
   security_group_id = aws_security_group.private_instances_security_group.id
 }
 
+data "aws_iam_policy_document" "assume_policy_document" {
+  statement {
+    actions = [
+      "sts:AssumeRole"
+    ]
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
 resource "aws_iam_role" "bastion_host_role" {
-  path = "/"
+  path               = "/"
+  assume_role_policy = data.aws_iam_policy_document.assume_policy_document.json
+}
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": [
-          "ec2.amazonaws.com"
-        ]
-      },
-      "Action": [
-        "sts:AssumeRole"
-      ]
+data "aws_iam_policy_document" "bastion_host_policy_document" {
+
+  statement {
+    actions = [
+      "s3:PutObject",
+      "s3:PutObjectAcl"
+    ]
+    resources = ["${aws_s3_bucket.bucket.arn}/logs/*"]
+  }
+
+  statement {
+    actions = [
+      "s3:GetObject"
+    ]
+    resources = ["${aws_s3_bucket.bucket.arn}/public-keys/*"]
+  }
+
+  statement {
+    actions = [
+      "s3:ListBucket"
+    ]
+    resources = [
+    aws_s3_bucket.bucket.arn]
+
+    condition {
+      test     = "StringEquals"
+      values   = ["s3:prefix"]
+      variable = "public-keys/"
     }
-  ]
-}
-EOF
+  }
+
+  statement {
+    actions = [
+
+      "kms:Encrypt",
+      "kms:Decrypt"
+    ]
+    resources = [aws_kms_key.key.arn]
+  }
 
 }
 
-resource "aws_iam_role_policy" "bastion_host_role_policy" {
-  role = aws_iam_role.bastion_host_role.id
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:PutObject",
-        "s3:PutObjectAcl"
-      ],
-      "Resource": "arn:aws:s3:::${var.bucket_name}/logs/*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::${var.bucket_name}/public-keys/*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": "s3:ListBucket",
-      "Resource": "arn:aws:s3:::${var.bucket_name}",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": "public-keys/"
-        }
-      }
-    }
-  ]
-}
-EOF
-
-}
 
 resource "aws_route53_record" "bastion_record_name" {
   name    = var.bastion_record_name

@@ -7,9 +7,28 @@ data "template_file" "user_data" {
   }
 }
 
+resource "aws_kms_key" "key" {
+  tags = merge(var.tags)
+}
+
+resource "aws_kms_alias" "alias" {
+  name          = "alias/${var.bucket_name}"
+  target_key_id = aws_kms_key.key.arn
+}
+
 resource "aws_s3_bucket" "bucket" {
   bucket = var.bucket_name
   acl    = "bucket-owner-full-control"
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        kms_master_key_id = aws_kms_key.key.id
+        sse_algorithm     = "aws:kms"
+      }
+    }
+  }
+
 
   force_destroy = var.bucket_force_destroy
 

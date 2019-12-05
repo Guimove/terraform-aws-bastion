@@ -14,3 +14,6 @@ output "private_instances_security_group" {
   value = aws_security_group.private_instances_security_group.id
 }
 
+output "bastion_target_group" {
+  value = aws_lb_target_group.bastion_lb_target_group
+}

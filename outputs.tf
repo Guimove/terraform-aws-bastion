@@ -17,11 +17,3 @@ output "private_instances_security_group" {
 output "bastion_target_group" {
   value = aws_lb_target_group.bastion_lb_target_group
 }
-
-output "elb_subnets" {
-  value = var.elb_subnets
-}
-
-output "tags" {
-  value = var.tags
-}

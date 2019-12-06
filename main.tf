@@ -166,12 +166,12 @@ resource "aws_route53_record" "bastion_record_name" {
   name    = var.bastion_record_name
   zone_id = var.hosted_zone_name
   type    = "A"
-  count   = var.create_dns_record && var.create_lb || var.create_dns_record && var.lcdp_bastion_nlb ? 1 : 0
+  count   = var.create_dns_record && var.create_lb || var.create_dns_record && var.lcdp_bastion_nlb != null ? 1 : 0
 
   alias {
     evaluate_target_health = true
-    name                   = var.lcdp_bastion_nlb != null ? var.lcdp_bastion_nlb[0].dns_name : aws_lb.bastion_lb[0].dns_name
-    zone_id                = var.lcdp_bastion_nlb != null ? var.lcdp_bastion_nlb[0].zone_id : aws_lb.bastion_lb[0].zone_id
+    name                   = var.lcdp_bastion_nlb != null ? var.lcdp_bastion_nlb.dns_name : aws_lb.bastion_lb[0].dns_name
+    zone_id                = var.lcdp_bastion_nlb != null ? var.lcdp_bastion_nlb.zone_id : aws_lb.bastion_lb[0].zone_id
   }
 }
 
@@ -209,7 +209,7 @@ resource "aws_lb_listener" "bastion_lb_listener_22" {
     type             = "forward"
   }
 
-  load_balancer_arn = var.lcdp_bastion_nlb != null ? var.lcdp_bastion_nlb[0].arn : aws_lb.bastion_lb[0].arn
+  load_balancer_arn = var.lcdp_bastion_nlb != null ? var.lcdp_bastion_nlb[0].arn : aws_lb.bastion_lb.arn
   port              = var.public_ssh_port
   protocol          = "TCP"
 }
@@ -229,7 +229,7 @@ resource "aws_launch_configuration" "bastion_launch_configuration" {
   key_name                    = var.bastion_host_key_pair
 
   security_groups = [
-    aws_security_group.bastion_host_security_group.id,
+    aws_security_group.bastion_host_security_group.id
   ]
 
   user_data = data.template_file.user_data.rendered

@@ -18,4 +18,5 @@ module "bastion" {
 
   create_lb         = false
   create_dns_record = false
+  lcdp_bastion_nlb  = null
 }

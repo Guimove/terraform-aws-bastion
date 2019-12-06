@@ -166,6 +166,7 @@ resource "aws_route53_record" "bastion_record_name" {
   name    = var.bastion_record_name
   zone_id = var.hosted_zone_name
   type    = "A"
+
   count   = var.create_dns_record && var.create_lb || var.create_dns_record && var.lcdp_bastion_nlb != null ? 1 : 0
 
   alias {
@@ -208,6 +209,7 @@ resource "aws_lb_listener" "bastion_lb_listener_22" {
     target_group_arn = aws_lb_target_group.bastion_lb_target_group[0].arn
     type             = "forward"
   }
+
 
   load_balancer_arn = var.lcdp_bastion_nlb != null ? var.lcdp_bastion_nlb.arn : aws_lb.bastion_lb[0].arn
   port              = var.public_ssh_port

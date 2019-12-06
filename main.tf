@@ -209,7 +209,7 @@ resource "aws_lb_listener" "bastion_lb_listener_22" {
     type             = "forward"
   }
 
-  load_balancer_arn = var.lcdp_bastion_nlb != null ? var.lcdp_bastion_nlb[0].arn : aws_lb.bastion_lb.arn
+  load_balancer_arn = var.lcdp_bastion_nlb != null ? var.lcdp_bastion_nlb.arn : aws_lb.bastion_lb[0].arn
   port              = var.public_ssh_port
   protocol          = "TCP"
 }

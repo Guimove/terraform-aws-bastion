@@ -5,7 +5,7 @@ locals {
 
   has_created_lb = var.create_lb ? true : false
   has_injected_lb = var.bastion_nlb != null ? true : false
-  has_lb = has_created_lb || has_injected_lb
+  has_lb = local.has_created_lb || local.has_injected_lb
 }
 
 resource "null_resource" "tags_as_list_of_maps" {

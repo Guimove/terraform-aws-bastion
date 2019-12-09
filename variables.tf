@@ -64,7 +64,7 @@ variable "bastion_launch_configuration_name" {
 }
 
 variable "bastion_nlb"{
-  description = "Un network loadbalancer a été créé si cette valeur est différente de nul"
+  description = "A network loadbalancer has been created if this value is different from null"
   default = null
 }
 

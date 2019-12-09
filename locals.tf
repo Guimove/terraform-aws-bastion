@@ -3,8 +3,8 @@ locals {
 
   name_prefix = var.bastion_launch_configuration_name
 
-  has_lb = var.create_lb || var.lcdp_bastion_nlb != null
-  has_injected_lb = var.lcdp_bastion_nlb != null ? true : false
+  has_lb = var.create_lb || var.bastion_nlb != null
+  has_injected_lb = var.bastion_nlb != null ? true : false
   has_created_lb = var.create_lb ? 1 : 0
 }
 

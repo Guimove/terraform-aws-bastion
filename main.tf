@@ -162,23 +162,27 @@ EOF
 
 }
 
+
 resource "aws_route53_record" "bastion_record_name" {
+  count   = var.create_dns_record && local.has_lb ? 1 : 0
   name    = var.bastion_record_name
   zone_id = var.hosted_zone_name
   type    = "A"
-  count   = var.create_dns_record && var.create_lb ? 1 : 0
 
   alias {
     evaluate_target_health = true
-    name                   = aws_lb.bastion_lb[0].dns_name
-    zone_id                = aws_lb.bastion_lb[0].zone_id
+    name                   = local.has_injected_lb ? var.bastion_nlb.dns_name : aws_lb.bastion_lb[0].dns_name
+    zone_id                = local.has_injected_lb ? var.bastion_nlb.zone_id : aws_lb.bastion_lb[0].zone_id
   }
 }
 
+
+
 resource "aws_lb" "bastion_lb" {
+  count    = var.create_lb ? 1 : 0
+
   internal = var.is_lb_private
   name     = "${local.name_prefix}-lb"
-  count    = var.create_lb ? 1 : 0
 
   subnets = var.elb_subnets
 
@@ -188,7 +192,7 @@ resource "aws_lb" "bastion_lb" {
 
 resource "aws_lb_target_group" "bastion_lb_target_group" {
   name        = "${local.name_prefix}-lb-target"
-  count       = var.create_lb ? 1 : 0
+  count       = local.has_lb ? 1 : 0
   port        = var.public_ssh_port
   protocol    = "TCP"
   vpc_id      = var.vpc_id
@@ -203,13 +207,13 @@ resource "aws_lb_target_group" "bastion_lb_target_group" {
 }
 
 resource "aws_lb_listener" "bastion_lb_listener_22" {
-  count              = var.create_lb ? 1 : 0
+  count              = local.has_lb ? 1 : 0
   default_action {
     target_group_arn = aws_lb_target_group.bastion_lb_target_group[0].arn
     type             = "forward"
   }
 
-  load_balancer_arn = aws_lb.bastion_lb[0].arn
+  load_balancer_arn = local.has_injected_lb ? var.bastion_nlb.arn : aws_lb.bastion_lb[0].arn
   port              = var.public_ssh_port
   protocol          = "TCP"
 }
@@ -229,7 +233,7 @@ resource "aws_launch_configuration" "bastion_launch_configuration" {
   key_name                    = var.bastion_host_key_pair
 
   security_groups = [
-    aws_security_group.bastion_host_security_group.id,
+    aws_security_group.bastion_host_security_group.id
   ]
 
   user_data = data.template_file.user_data.rendered
@@ -252,7 +256,7 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   health_check_grace_period = 180
   health_check_type         = "EC2"
 
-  target_group_arns = var.create_lb ? [
+  target_group_arns = local.has_lb ? [
     aws_lb_target_group.bastion_lb_target_group[0].arn,
   ] : []
 

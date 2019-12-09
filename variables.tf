@@ -63,6 +63,11 @@ variable "bastion_launch_configuration_name" {
   default     = "lc"
 }
 
+variable "bastion_nlb"{
+  description = "A network loadbalancer has been created if this value is different from null"
+  default = null
+}
+
 variable "elb_subnets" {
   type        = list(string)
   description = "List of subnet were the ELB will be deployed"

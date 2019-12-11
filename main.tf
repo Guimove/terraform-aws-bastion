@@ -163,9 +163,9 @@ data "aws_iam_policy_document" "bastion_host_policy_document" {
     aws_s3_bucket.bucket.arn]
 
     condition {
-      test     = "StringEquals"
-      values   = ["s3:prefix"]
-      variable = "public-keys/"
+      test     = "ForAnyValue:StringEquals"
+      values   = ["public-keys/"]
+      variable = "s3:prefix"
     }
   }
 

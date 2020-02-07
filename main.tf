@@ -237,7 +237,7 @@ resource "aws_launch_configuration" "bastion_launch_configuration" {
 }
 
 resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
-  name                 = "ASG-${aws_launch_configuration.bastion_launch_configuration.name}"
+  name                 = "${aws_launch_configuration.bastion_launch_configuration.name}"
   launch_configuration = aws_launch_configuration.bastion_launch_configuration.name
   max_size             = var.bastion_instance_count
   min_size             = var.bastion_instance_count

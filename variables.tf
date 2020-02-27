@@ -18,7 +18,9 @@ variable "tags" {
   type        = map(string)
 }
 
-variable "region" {
+variable "aws_region" {
+  description = "Region within the module will run"
+  type        = string
 }
 
 variable "cidrs" {
@@ -120,4 +122,3 @@ variable "private_ssh_port" {
   description = "Set the SSH port to use between the bastion and private instance"
   default     = 22
 }
-

@@ -21,7 +21,6 @@ variable "tags" {
 variable "aws_region" {
   description = "Region within the module will run"
   type        = string
-  default     = "eu-west-3"
 }
 
 variable "cidrs" {

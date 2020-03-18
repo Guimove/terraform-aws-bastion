@@ -109,3 +109,8 @@ variable "private_ssh_port" {
   default     = 22
 }
 
+variable "extra_user_data_content" {
+  description = "Additional scripting to pass to the bastion host. For example, this can include installing postgresql for the `psql` command."
+  type = string
+  default = ""
+}

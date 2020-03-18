@@ -52,9 +52,9 @@ variable "bastion_record_name" {
   default     = ""
 }
 
-variable "bastion_launch_configuration_name" {
-  description = "Bastion Launch configuration Name, will also be used for the ASG"
-  default     = "lc"
+variable "bastion_launch_template_name" {
+  description = "Bastion Launch template Name, will also be used for the ASG"
+  default     = "lt"
 }
 
 variable "elb_subnets" {

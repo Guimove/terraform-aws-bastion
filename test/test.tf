@@ -5,7 +5,7 @@ module "bastion" {
   "vpc_id"                = "my_vpc_id"
   "is_lb_private"         = "true"
   "bastion_host_key_pair" = "my_key_pair"
-  "hosted_zone_name"      = "my.hosted.zone.name."
+  "hosted_zone_id"      = "my.hosted.zone.name."
   "bastion_record_name"   = "bastion.my.hosted.zone.name."
 
   "elb_subnets" = [

@@ -42,7 +42,7 @@ variable "bastion_host_key_pair" {
   description = "Select the key pair to use to launch the bastion host"
 }
 
-variable "hosted_zone_name" {
+variable "hosted_zone_id" {
   description = "Name of the hosted zone were we'll register the bastion DNS name"
   default     = ""
 }
@@ -52,10 +52,9 @@ variable "bastion_record_name" {
   default     = ""
 }
 
-variable "bastion_launch_configuration_name" {
-  type        = string
-  description = "Bastion Launch configuration Name, will also be used for the ASG"
-  default     = "lc"
+variable "bastion_launch_template_name" {
+  description = "Bastion Launch template Name, will also be used for the ASG"
+  default     = "lt"
 }
 
 variable "bastion_ami" {
@@ -83,7 +82,7 @@ variable "bastion_instance_count" {
 }
 
 variable "create_dns_record" {
-  description = "Choose if you want to create a record name for the bastion (LB). If true 'hosted_zone_name' and 'bastion_record_name' are mandatory "
+  description = "Choose if you want to create a record name for the bastion (LB). If true 'hosted_zone_id' and 'bastion_record_name' are mandatory "
 }
 
 variable "log_auto_clean" {
@@ -118,8 +117,8 @@ variable "private_ssh_port" {
 
 variable "extra_user_data_content" {
   description = "Additional scripting to pass to the bastion host. For example, this can include installing postgresql for the `psql` command."
-  type = string
-  default = ""
+  type        = string
+  default     = ""
 }
 
 variable "allow_ssh_commands" {

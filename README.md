@@ -59,9 +59,11 @@ module "bastion" {
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | auto_scaling_group_subnets | List of subnet were the Auto Scalling Group will deploy the instances | list | - | yes |
-| bastion_amis |  | map | `<map>` | no |
+| allow_ssh_commands | Allows the SSH user to execute one-off commands. Pass 'True' to enable. Warning: These commands are not logged and increase the vulnerability of the system. Use at your own discretion. | string | "" | no |
 | bastion_host_key_pair | Select the key pair to use to launch the bastion host | string | - | yes |
 | bastion_instance_count | Count of bastion instance created on VPC | string | `1` | no |
+| bastion_launch_configuration_name | Bastion Launch configuration Name, will also be used for the ASG | string | `lc` | no |
+| bastion_ami | The AMI that the Bastion Host will use. If not supplied, the latest Amazon2 AMI will be used. | string | `` | no |
 | bastion_record_name | DNS record name to use for the bastion | string | `` | no |
 | bucket_name | Bucket name were the bastion will store the logs | string | - | yes |
 | bucket_force_destroy | On destroy, bucket and all objects should be destroyed when using true | string | false | no |

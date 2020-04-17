@@ -57,6 +57,12 @@ variable "bastion_launch_template_name" {
   default     = "lt"
 }
 
+variable "bastion_ami" {
+  type        = string
+  description = "The AMI that the Bastion Host will use."
+  default     = ""
+}
+
 variable "elb_subnets" {
   type        = list(string)
   description = "List of subnet were the ELB will be deployed"
@@ -111,6 +117,12 @@ variable "private_ssh_port" {
 
 variable "extra_user_data_content" {
   description = "Additional scripting to pass to the bastion host. For example, this can include installing postgresql for the `psql` command."
-  type = string
-  default = ""
+  type        = string
+  default     = ""
+}
+
+variable "allow_ssh_commands" {
+  description = "Allows the SSH user to execute one-off commands. Pass 'True' to enable. Warning: These commands are not logged and increase the vulnerability of the system. Use at your own discretion."
+  type        = string
+  default     = ""
 }

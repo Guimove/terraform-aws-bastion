@@ -5,6 +5,7 @@ data "template_file" "user_data" {
     aws_region              = var.region
     bucket_name             = var.bucket_name
     extra_user_data_content = var.extra_user_data_content
+    allow_ssh_commands      = var.allow_ssh_commands
   }
 }
 
@@ -238,7 +239,7 @@ resource "aws_iam_instance_profile" "bastion_host_profile" {
 
 resource "aws_launch_template" "bastion_launch_template" {
   name_prefix   = local.name_prefix
-  image_id      = data.aws_ami.amazon-linux-2.id
+  image_id      = var.bastion_ami != "" ? var.bastion_ami : data.aws_ami.amazon-linux-2.id
   instance_type = "t3.nano"
   monitoring {
     enabled = true
@@ -303,4 +304,3 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
     create_before_destroy = true
   }
 }
-

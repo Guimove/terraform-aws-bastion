@@ -54,7 +54,7 @@ variable "bastion_record_name" {
 
 variable "bastion_launch_template_name" {
   description = "Bastion Launch template Name, will also be used for the ASG"
-  default     = "lt"
+  default     = "bastion-lt"
 }
 
 variable "bastion_ami" {

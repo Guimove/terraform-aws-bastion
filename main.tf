@@ -182,6 +182,15 @@ data "aws_iam_policy_document" "bastion_host_policy_document" {
 
 }
 
+resource "aws_iam_policy" "bastion_host_policy" {
+  name   = "BastionHost"
+  policy = data.aws_iam_policy_document.bastion_host_policy_document.json
+}
+
+resource "aws_iam_role_policy_attachment" "bastion_host" {
+  policy_arn = aws_iam_policy.bastion_host_policy.arn
+  role       = aws_iam_role.bastion_host_role.name
+}
 
 resource "aws_route53_record" "bastion_record_name" {
   name    = var.bastion_record_name

@@ -38,7 +38,7 @@ module "bastion" {
   "vpc_id" = "my_vpc_id"
   "is_lb_private" = "true|false"
   "bastion_host_key_pair" = "my_key_pair"
-  "hosted_zone_name" = "my.hosted.zone.name."
+  "hosted_zone_id" = "my.hosted.zone.name."
   "bastion_record_name" = "bastion.my.hosted.zone.name."
   "elb_subnets" = [
     "subnet-id1a",
@@ -59,17 +59,20 @@ module "bastion" {
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | auto_scaling_group_subnets | List of subnet were the Auto Scalling Group will deploy the instances | list | - | yes |
-| bastion_amis |  | map | `<map>` | no |
+| allow_ssh_commands | Allows the SSH user to execute one-off commands. Pass 'True' to enable. Warning: These commands are not logged and increase the vulnerability of the system. Use at your own discretion. | string | "" | no |
 | bastion_host_key_pair | Select the key pair to use to launch the bastion host | string | - | yes |
 | bastion_instance_count | Count of bastion instance created on VPC | string | `1` | no |
+| bastion_launch_configuration_name | Bastion Launch configuration Name, will also be used for the ASG | string | `lc` | no |
+| bastion_ami | The AMI that the Bastion Host will use. If not supplied, the latest Amazon2 AMI will be used. | string | `` | no |
 | bastion_record_name | DNS record name to use for the bastion | string | `` | no |
 | bucket_name | Bucket name were the bastion will store the logs | string | - | yes |
 | bucket_force_destroy | On destroy, bucket and all objects should be destroyed when using true | string | false | no |
 | bucket_versioning | Enable bucket versioning or not | string | true | no |
 | cidrs | List of CIDRs than can access to the bastion. Default : 0.0.0.0/0 | list | `<list>` | no |
-| create_dns_record | Choose if you want to create a record name for the bastion (LB). If true 'hosted_zone_name' and 'bastion_record_name' are mandatory | integer | - | yes |
+| create_dns_record | Choose if you want to create a record name for the bastion (LB). If true 'hosted_zone_id' and 'bastion_record_name' are mandatory | integer | - | yes |
 | elb_subnets | List of subnet were the ELB will be deployed | list | - | yes |
-| hosted_zone_name | Name of the hosted zone were we'll register the bastion DNS name | string | `` | no |
+| extra_user_data_content | Additional scripting to pass to the bastion host. For example, this can include installing postgresql for the `psql` command. | string | `""` | no |
+| hosted_zone_id | Name of the hosted zone were we'll register the bastion DNS name | string | `` | no |
 | is_lb_private | If TRUE the load balancer scheme will be "internal" else "internet-facing" | string | - | yes |
 | log_auto_clean | Enable or not the lifecycle | string | `false` | no |
 | log_expiry_days | Number of days before logs expiration | string | `90` | no |
@@ -86,7 +89,10 @@ module "bastion" {
 | Name | Description |
 |------|-------------|
 | bucket_name |  |
-| elb_ip |  |
+| bucket_name | The name of the bucket where logs are sent |
+| elb_ip | The ELB DNS Name for the Bastion Host instances |
+| bastion_host_security_group | The security group ID of the Bastion Host |
+| private_instances_security_group | The security group ID of the the private instances that allow Bastion SSH ingress |
 
 Known issues
 ------------

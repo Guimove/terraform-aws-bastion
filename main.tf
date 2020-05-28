@@ -184,7 +184,7 @@ data "aws_iam_policy_document" "bastion_host_policy_document" {
 }
 
 resource "aws_iam_policy" "bastion_host_policy" {
-  name   = "BastionHost-${local.name_prefix}"
+  name_prefix   = "BastionHost"
   policy = data.aws_iam_policy_document.bastion_host_policy_document.json
 }
 

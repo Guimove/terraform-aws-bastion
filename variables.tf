@@ -24,6 +24,7 @@ variable "region" {
 variable "cidrs" {
   description = "List of CIDRs than can access to the bastion. Default : 0.0.0.0/0"
   type        = list(string)
+
   default = [
     "0.0.0.0/0",
   ]
@@ -41,7 +42,7 @@ variable "bastion_host_key_pair" {
   description = "Select the key pair to use to launch the bastion host"
 }
 
-variable "hosted_zone_name" {
+variable "hosted_zone_id" {
   description = "Name of the hosted zone were we'll register the bastion DNS name"
   default     = ""
 }
@@ -51,17 +52,24 @@ variable "bastion_record_name" {
   default     = ""
 }
 
-variable "bastion_launch_configuration_name" {
-  description = "Bastion Launch configuration Name, will also be used for the ASG"
-  default     = "lc"
+variable "bastion_launch_template_name" {
+  description = "Bastion Launch template Name, will also be used for the ASG"
+  default     = "bastion-lt"
+}
+
+variable "bastion_ami" {
+  type        = string
+  description = "The AMI that the Bastion Host will use."
+  default     = ""
 }
 
 variable "elb_subnets" {
-  type        = list(any)
+  type        = list(string)
   description = "List of subnet were the ELB will be deployed"
 }
 
 variable "auto_scaling_group_subnets" {
+  type        = list(string)
   description = "List of subnet were the Auto Scalling Group will deploy the instances"
 }
 
@@ -74,7 +82,7 @@ variable "bastion_instance_count" {
 }
 
 variable "create_dns_record" {
-  description = "Choose if you want to create a record name for the bastion (LB). If true 'hosted_zone_name' and 'bastion_record_name' are mandatory "
+  description = "Choose if you want to create a record name for the bastion (LB). If true 'hosted_zone_id' and 'bastion_record_name' are mandatory "
 }
 
 variable "log_auto_clean" {
@@ -107,8 +115,20 @@ variable "private_ssh_port" {
   default     = 22
 }
 
-variable "cross_zone_lb" {
-  description = "Enable cross availability zone load balancing"
-  default     = false
+variable "extra_user_data_content" {
+  description = "Additional scripting to pass to the bastion host. For example, this can include installing postgresql for the `psql` command."
+  type        = string
+  default     = ""
 }
 
+variable "allow_ssh_commands" {
+  description = "Allows the SSH user to execute one-off commands. Pass 'True' to enable. Warning: These commands are not logged and increase the vulnerability of the system. Use at your own discretion."
+  type        = string
+  default     = ""
+}
+
+variable "cross_zone_lb" {
+  description = "If true, cross-zone load balancing of the load balancer will be enabled."
+  type        = bool
+  default     = false
+}

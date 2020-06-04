@@ -54,45 +54,55 @@ module "bastion" {
   }
 }
 ```
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | >= 0.12 |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| auto_scaling_group_subnets | List of subnet were the Auto Scalling Group will deploy the instances | list | - | yes |
-| allow_ssh_commands | Allows the SSH user to execute one-off commands. Pass 'True' to enable. Warning: These commands are not logged and increase the vulnerability of the system. Use at your own discretion. | string | "" | no |
-| bastion_host_key_pair | Select the key pair to use to launch the bastion host | string | - | yes |
-| bastion_instance_count | Count of bastion instance created on VPC | string | `1` | no |
-| bastion_launch_configuration_name | Bastion Launch configuration Name, will also be used for the ASG | string | `lc` | no |
-| bastion_ami | The AMI that the Bastion Host will use. If not supplied, the latest Amazon2 AMI will be used. | string | `` | no |
-| bastion_record_name | DNS record name to use for the bastion | string | `` | no |
-| bucket_name | Bucket name were the bastion will store the logs | string | - | yes |
-| bucket_force_destroy | On destroy, bucket and all objects should be destroyed when using true | string | false | no |
-| bucket_versioning | Enable bucket versioning or not | string | true | no |
-| cidrs | List of CIDRs than can access to the bastion. Default : 0.0.0.0/0 | list | `<list>` | no |
-| create_dns_record | Choose if you want to create a record name for the bastion (LB). If true 'hosted_zone_id' and 'bastion_record_name' are mandatory | integer | - | yes |
-| elb_subnets | List of subnet were the ELB will be deployed | list | - | yes |
-| extra_user_data_content | Additional scripting to pass to the bastion host. For example, this can include installing postgresql for the `psql` command. | string | `""` | no |
-| hosted_zone_id | Name of the hosted zone were we'll register the bastion DNS name | string | `` | no |
-| is_lb_private | If TRUE the load balancer scheme will be "internal" else "internet-facing" | string | - | yes |
-| log_auto_clean | Enable or not the lifecycle | string | `false` | no |
-| log_expiry_days | Number of days before logs expiration | string | `90` | no |
-| log_glacier_days | Number of days before moving logs to Glacier | string | `60` | no |
-| log_standard_ia_days | Number of days before moving logs to IA Storage | string | `30` | no |
-| private_ssh_port | Set the SSH port to use between the bastion and private instance | string | `22` | no |
-| public_ssh_port | Set the SSH port to use from desktop to the bastion | string | `22` | no |
-| region |  | string | - | yes |
-| tags | A mapping of tags to assign | map | `<map>` | no |
-| vpc_id | VPC id were we'll deploy the bastion | string | - | yes |
+| allow\_ssh\_commands | Allows the SSH user to execute one-off commands. Pass 'True' to enable. Warning: These commands are not logged and increase the vulnerability of the system. Use at your own discretion. | `string` | `""` | no |
+| associate\_public\_ip\_address | n/a | `bool` | `true` | no |
+| auto\_scaling\_group\_subnets | List of subnet were the Auto Scalling Group will deploy the instances | `list(string)` | n/a | yes |
+| bastion\_ami | The AMI that the Bastion Host will use. | `string` | `""` | no |
+| bastion\_host\_key\_pair | Select the key pair to use to launch the bastion host | `any` | n/a | yes |
+| bastion\_instance\_count | n/a | `number` | `1` | no |
+| bastion\_launch\_template\_name | Bastion Launch template Name, will also be used for the ASG | `string` | `"bastion-lt"` | no |
+| bastion\_record\_name | DNS record name to use for the bastion | `string` | `""` | no |
+| bucket\_force\_destroy | The bucket and all objects should be destroyed when using true | `bool` | `false` | no |
+| bucket\_name | Bucket name were the bastion will store the logs | `any` | n/a | yes |
+| bucket\_versioning | Enable bucket versioning or not | `bool` | `true` | no |
+| cidrs | List of CIDRs than can access to the bastion. Default : 0.0.0.0/0 | `list(string)` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
+| create\_dns\_record | Choose if you want to create a record name for the bastion (LB). If true 'hosted\_zone\_id' and 'bastion\_record\_name' are mandatory | `any` | n/a | yes |
+| cross\_zone\_lb | If true, cross-zone load balancing of the load balancer will be enabled. | `bool` | `false` | no |
+| elb\_subnets | List of subnet were the ELB will be deployed | `list(string)` | n/a | yes |
+| extra\_user\_data\_content | Additional scripting to pass to the bastion host. For example, this can include installing postgresql for the `psql` command. | `string` | `""` | no |
+| hosted\_zone\_id | Name of the hosted zone were we'll register the bastion DNS name | `string` | `""` | no |
+| is\_lb\_private | If TRUE the load balancer scheme will be "internal" else "internet-facing" | `any` | n/a | yes |
+| log\_auto\_clean | Enable or not the lifecycle | `bool` | `false` | no |
+| log\_expiry\_days | Number of days before logs expiration | `number` | `90` | no |
+| log\_glacier\_days | Number of days before moving logs to Glacier | `number` | `60` | no |
+| log\_standard\_ia\_days | Number of days before moving logs to IA Storage | `number` | `30` | no |
+| private\_ssh\_port | Set the SSH port to use between the bastion and private instance | `number` | `22` | no |
+| public\_ssh\_port | Set the SSH port to use from desktop to the bastion | `number` | `22` | no |
+| region | n/a | `any` | n/a | yes |
+| tags | A mapping of tags to assign | `map(string)` | `{}` | no |
+| vpc\_id | VPC id were we'll deploy the bastion | `any` | n/a | yes |
+
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| bucket_name |  |
-| bucket_name | The name of the bucket where logs are sent |
-| elb_ip | The ELB DNS Name for the Bastion Host instances |
-| bastion_host_security_group | The security group ID of the Bastion Host |
-| private_instances_security_group | The security group ID of the the private instances that allow Bastion SSH ingress |
+| bastion\_host\_security\_group | The security group ID of the Bastion Host |
+| bucket\_kms\_key\_alias | The alias name of the |
+| bucket\_kms\_key\_arn | The Amazon Resource Name (ARN) of the KMS key |
+| bucket\_name | The name of the bucket where logs are sent |
+| elb\_ip | The ELB DNS Name for the Bastion Host instances |
+| private\_instances\_security\_group | The security group ID of the the private instances that allow Bastion SSH ingress |
 
 Known issues
 ------------

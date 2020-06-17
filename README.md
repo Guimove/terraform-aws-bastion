@@ -40,6 +40,7 @@ module "bastion" {
   "bastion_host_key_pair" = "my_key_pair"
   "hosted_zone_id" = "my.hosted.zone.name."
   "bastion_record_name" = "bastion.my.hosted.zone.name."
+  "bastion_iam_policy_name" = "myBastionHostPolicy"
   "elb_subnets" = [
     "subnet-id1a",
     "subnet-id1b"
@@ -65,6 +66,7 @@ module "bastion" {
 | bastion_launch_configuration_name | Bastion Launch configuration Name, will also be used for the ASG | string | `lc` | no |
 | bastion_ami | The AMI that the Bastion Host will use. If not supplied, the latest Amazon2 AMI will be used. | string | `` | no |
 | bastion_record_name | DNS record name to use for the bastion | string | `` | no |
+| bastion_host_policy_name | IAM Policy Name to create for the bastion ibnstance role | string | `BastionHost` | no |
 | bucket_name | Bucket name were the bastion will store the logs | string | - | yes |
 | bucket_force_destroy | On destroy, bucket and all objects should be destroyed when using true | string | false | no |
 | bucket_versioning | Enable bucket versioning or not | string | true | no |

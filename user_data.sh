@@ -13,6 +13,9 @@ chown ec2-user:ec2-user /var/log/bastion
 chmod -R 770 /var/log/bastion
 setfacl -Rdm other:0 /var/log/bastion
 
+# Update sshd default port to public_ssh_port
+sed -i "s/#Port 22/Port ${public_ssh_port}/g" /etc/ssh/sshd_config
+
 # Make OpenSSH execute a custom script on logins
 echo -e "\\nForceCommand /usr/bin/bastion/shell" >> /etc/ssh/sshd_config
 

@@ -131,3 +131,8 @@ variable "bastion_iam_policy_name" {
   description = "IAM policy name to create for granting the instance role access to the bucket"
   default     = "BastionHost"
 }
+
+variable "instance_type" {
+  description = "Instance size of the bastion"
+  default     = "t3.nano"
+}

@@ -66,7 +66,7 @@ module "bastion" {
 | bastion_launch_configuration_name | Bastion Launch configuration Name, will also be used for the ASG | string | `lc` | no |
 | bastion_ami | The AMI that the Bastion Host will use. If not supplied, the latest Amazon2 AMI will be used. | string | `` | no |
 | bastion_record_name | DNS record name to use for the bastion | string | `` | no |
-| bastion_host_policy_name | IAM Policy Name to create for the bastion ibnstance role | string | `BastionHost` | no |
+| bastion_host_policy_name | IAM Policy Name to create for the bastion instance role | string | `BastionHost` | no |
 | bucket_name | Bucket name were the bastion will store the logs | string | - | yes |
 | bucket_force_destroy | On destroy, bucket and all objects should be destroyed when using true | string | false | no |
 | bucket_versioning | Enable bucket versioning or not | string | true | no |
@@ -75,6 +75,7 @@ module "bastion" {
 | elb_subnets | List of subnet were the ELB will be deployed | list | - | yes |
 | extra_user_data_content | Additional scripting to pass to the bastion host. For example, this can include installing postgresql for the `psql` command. | string | `""` | no |
 | hosted_zone_id | Name of the hosted zone were we'll register the bastion DNS name | string | `` | no |
+| instance_type | Instance size of the bastion | `string` | `"t3.nano"` | no |
 | is_lb_private | If TRUE the load balancer scheme will be "internal" else "internet-facing" | string | - | yes |
 | log_auto_clean | Enable or not the lifecycle | string | `false` | no |
 | log_expiry_days | Number of days before logs expiration | string | `90` | no |

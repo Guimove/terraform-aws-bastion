@@ -250,7 +250,7 @@ resource "aws_iam_instance_profile" "bastion_host_profile" {
 resource "aws_launch_template" "bastion_launch_template" {
   name_prefix   = local.name_prefix
   image_id      = var.bastion_ami != "" ? var.bastion_ami : data.aws_ami.amazon-linux-2.id
-  instance_type = "t3.nano"
+  instance_type = var.instance_type
   monitoring {
     enabled = true
   }

@@ -126,3 +126,8 @@ variable "allow_ssh_commands" {
   type        = string
   default     = ""
 }
+
+variable "bastion_iam_policy_name" {
+  description = "IAM policy name to create for granting the instance role access to the bucket"
+  default     = "BastionHost"
+}

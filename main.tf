@@ -15,7 +15,7 @@ resource "aws_kms_key" "key" {
 }
 
 resource "aws_kms_alias" "alias" {
-  name          = "alias/${var.bucket_name}"
+  name          = "alias/${replace("${var.bucket_name}", ".", "_")}"
   target_key_id = aws_kms_key.key.arn
 }
 
@@ -69,9 +69,9 @@ resource "aws_s3_bucket" "bucket" {
 }
 
 resource "aws_s3_bucket_object" "bucket_public_keys_readme" {
-  bucket  = aws_s3_bucket.bucket.id
-  key     = "public-keys/README.txt"
-  content = "Drop here the ssh public keys of the instances you want to control"
+  bucket     = aws_s3_bucket.bucket.id
+  key        = "public-keys/README.txt"
+  content    = "Drop here the ssh public keys of the instances you want to control"
   kms_key_id = aws_kms_key.key.arn
 }
 

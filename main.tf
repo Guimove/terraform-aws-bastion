@@ -6,6 +6,7 @@ data "template_file" "user_data" {
     bucket_name             = var.bucket_name
     extra_user_data_content = var.extra_user_data_content
     allow_ssh_commands      = var.allow_ssh_commands
+    public_ssh_port         = var.public_ssh_port
   }
 }
 
@@ -115,8 +116,8 @@ resource "aws_security_group" "private_instances_security_group" {
 resource "aws_security_group_rule" "ingress_instances" {
   description = "Incoming traffic from bastion"
   type        = "ingress"
-  from_port   = var.public_ssh_port
-  to_port     = var.public_ssh_port
+  from_port   = var.private_ssh_port
+  to_port     = var.private_ssh_port
   protocol    = "TCP"
 
   source_security_group_id = aws_security_group.bastion_host_security_group.id

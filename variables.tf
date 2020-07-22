@@ -19,6 +19,7 @@ variable "tags" {
 }
 
 variable "region" {
+  description = "AWS Region"
 }
 
 variable "cidrs" {
@@ -74,11 +75,13 @@ variable "auto_scaling_group_subnets" {
 }
 
 variable "associate_public_ip_address" {
-  default = true
+  default     = true
+  description = "Wether or not to associate a public ip"
 }
 
 variable "bastion_instance_count" {
-  default = 1
+  default     = 1
+  description = "Number of instances to create"
 }
 
 variable "create_dns_record" {

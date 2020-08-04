@@ -122,3 +122,9 @@ variable "private_ssh_port" {
   description = "Set the SSH port to use between the bastion and private instance"
   default     = 22
 }
+
+variable "enabled_metrics" {
+  description = "List of autoscaling group metrics to enable."
+  type        = list(string)
+  default     = []
+}

@@ -263,6 +263,8 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   termination_policies = [
     "OldestLaunchConfiguration",
   ]
+  
+  enabled_metrics = var.enabled_metrics
 
   tags = concat(
     list(map("key", "Name", "value", "ASG-${aws_launch_configuration.bastion_launch_configuration.name}", "propagate_at_launch", true)),

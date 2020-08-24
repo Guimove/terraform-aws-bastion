@@ -57,6 +57,17 @@ variable "bastion_launch_template_name" {
   default     = "bastion-lt"
 }
 
+variable "bastion_security_group_id" {
+  description = "Custom security group to use"
+  default = ""
+}
+
+variable "bastion_additional_security_groups" {
+ description = "List of additional security groups to attach to the launch template"
+ type = list(string)
+ default = []
+}
+
 variable "bastion_ami" {
   type        = string
   description = "The AMI that the Bastion Host will use."

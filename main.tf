@@ -317,4 +317,6 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   lifecycle {
     create_before_destroy = true
   }
+
+  depends_on = ["aws_s3_bucket.bucket"]
 }

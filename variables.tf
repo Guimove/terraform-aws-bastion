@@ -59,13 +59,13 @@ variable "bastion_launch_template_name" {
 
 variable "bastion_security_group_id" {
   description = "Custom security group to use"
-  default = ""
+  default     = ""
 }
 
 variable "bastion_additional_security_groups" {
- description = "List of additional security groups to attach to the launch template"
- type = list(string)
- default = []
+  description = "List of additional security groups to attach to the launch template"
+  type        = list(string)
+  default     = []
 }
 
 variable "bastion_ami" {

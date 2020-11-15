@@ -21,7 +21,7 @@ resource "aws_kms_alias" "alias" {
 
 resource "aws_s3_bucket" "bucket" {
   bucket = var.bucket_name
-  acl    = "bucket-owner-full-control"
+  acl    = "private"
 
   server_side_encryption_configuration {
     rule {

@@ -32,7 +32,7 @@ Usage
 
 ```hcl
 module "bastion" {
-  "source" = "terraform-aws-modules/bastion/aws"
+  "source" = "Guimove/bastion/aws"
   "bucket_name" = "my_famous_bucket_name"
   "region" = "eu-west-1"
   "vpc_id" = "my_vpc_id"

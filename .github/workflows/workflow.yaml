@@ -21,14 +21,14 @@ jobs:
 
       - name: Run a Terraform validate
         uses: docker://hashicorp/terraform:light
+        env:
+          AWS_DEFAULT_REGION: eu-east-1
         with:
           entrypoint: terraform
           args: validate
 
       - name: Run a Terraform fmt
         uses: docker://hashicorp/terraform:light
-        env:
-          AWS_DEFAULT_REGION: eu-east-1
         with:
           entrypoint: terraform
           args: fmt  --recursive -check=true --diff

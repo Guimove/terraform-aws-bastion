@@ -15,7 +15,7 @@ resource "aws_kms_key" "key" {
 }
 
 resource "aws_kms_alias" "alias" {
-  name          = "alias/${replace("${var.bucket_name}", ".", "_")}"
+  name          = "alias/${replace(var.bucket_name, ".", "_")}"
   target_key_id = aws_kms_key.key.arn
 }
 
@@ -318,5 +318,5 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
     create_before_destroy = true
   }
 
-  depends_on = ["aws_s3_bucket.bucket"]
+  depends_on = [aws_s3_bucket.bucket]
 }

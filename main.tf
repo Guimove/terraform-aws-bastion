@@ -7,9 +7,27 @@ data "template_file" "user_data" {
   }
 }
 
+resource "aws_kms_key" "key" {
+  tags = merge(var.tags)
+}
+
+resource "aws_kms_alias" "alias" {
+  name          = "alias/${replace(var.bucket_name, ".", "_")}"
+  target_key_id = aws_kms_key.key.arn
+}
+
 resource "aws_s3_bucket" "bucket" {
   bucket = var.bucket_name
   acl    = "private"
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        kms_master_key_id = aws_kms_key.key.id
+        sse_algorithm     = "aws:kms"
+      }
+    }
+  }
 
   force_destroy = var.bucket_force_destroy
 
@@ -50,6 +68,7 @@ resource "aws_s3_bucket_object" "bucket_public_keys_readme" {
   bucket  = aws_s3_bucket.bucket.id
   key     = "public-keys/README.txt"
   content = "Drop here the ssh public keys of the instances you want to control"
+  kms_key_id = aws_kms_key.key.arn
 }
 
 resource "aws_security_group" "bastion_host_security_group" {
@@ -102,66 +121,74 @@ resource "aws_security_group_rule" "ingress_instances" {
   security_group_id = aws_security_group.private_instances_security_group.id
 }
 
+data "aws_iam_policy_document" "assume_policy_document" {
+  statement {
+    actions = [
+      "sts:AssumeRole"
+    ]
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
 resource "aws_iam_role" "bastion_host_role" {
   path = "/"
+  assume_role_policy = data.aws_iam_policy_document.assume_policy_document.json
+}
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": [
-          "ec2.amazonaws.com"
-        ]
-      },
-      "Action": [
-        "sts:AssumeRole"
-      ]
+data "aws_iam_policy_document" "bastion_host_policy_document" {
+
+  statement {
+    actions = [
+      "s3:PutObject",
+      "s3:PutObjectAcl"
+    ]
+    resources = ["${aws_s3_bucket.bucket.arn}/logs/*"]
+  }
+
+  statement {
+    actions = [
+      "s3:GetObject"
+    ]
+    resources = ["${aws_s3_bucket.bucket.arn}/public-keys/*"]
+  }
+
+  statement {
+    actions = [
+      "s3:ListBucket"
+    ]
+    resources = [
+    aws_s3_bucket.bucket.arn]
+
+    condition {
+      test     = "ForAnyValue:StringEquals"
+      values   = ["public-keys/"]
+      variable = "s3:prefix"
     }
-  ]
-}
-EOF
+  }
+
+  statement {
+    actions = [
+
+      "kms:Encrypt",
+      "kms:Decrypt"
+    ]
+    resources = [aws_kms_key.key.arn]
+  }
 
 }
 
-resource "aws_iam_role_policy" "bastion_host_role_policy" {
-  role = aws_iam_role.bastion_host_role.id
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:PutObject",
-        "s3:PutObjectAcl"
-      ],
-      "Resource": "arn:aws:s3:::${var.bucket_name}/logs/*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::${var.bucket_name}/public-keys/*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": "s3:ListBucket",
-      "Resource": "arn:aws:s3:::${var.bucket_name}",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": "public-keys/"
-        }
-      }
-    }
-  ]
-}
-EOF
-
+resource "aws_iam_policy" "bastion_host_policy" {
+  name   = var.bastion_iam_policy_name
+  policy = data.aws_iam_policy_document.bastion_host_policy_document.json
 }
 
+resource "aws_iam_role_policy_attachment" "bastion_host" {
+  policy_arn = aws_iam_policy.bastion_host_policy.arn
+  role       = aws_iam_role.bastion_host_role.name
+}
 
 resource "aws_route53_record" "bastion_record_name" {
   count   = var.create_dns_record && local.has_lb ? 1 : 0

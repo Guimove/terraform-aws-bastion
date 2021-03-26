@@ -123,6 +123,11 @@ variable "private_ssh_port" {
   default     = 22
 }
 
+variable "bastion_iam_policy_name" {
+  description = "IAM policy name to create for granting the instance role access to the bucket"
+  default     = "BastionHost"
+}
+
 variable "enabled_metrics" {
   description = "List of autoscaling group metrics to enable."
   type        = list(string)

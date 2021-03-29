@@ -141,8 +141,9 @@ data "aws_iam_policy_document" "assume_policy_document" {
 }
 
 resource "aws_iam_role" "bastion_host_role" {
-  path               = "/"
-  assume_role_policy = data.aws_iam_policy_document.assume_policy_document.json
+  path                 = "/"
+  assume_role_policy   = data.aws_iam_policy_document.assume_policy_document.json
+  permissions_boundary = var.bastion_iam_permissions_boundary
 }
 
 data "aws_iam_policy_document" "bastion_host_policy_document" {

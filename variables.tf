@@ -143,6 +143,11 @@ variable "bastion_iam_policy_name" {
   default     = "BastionHost"
 }
 
+variable "bastion_iam_permissions_boundary" {
+  description = "IAM Role Permissions Boundary to constrain the bastion host role"
+  default     = ""
+}
+
 variable "instance_type" {
   description = "Instance size of the bastion"
   default     = "t3.nano"

@@ -152,3 +152,15 @@ variable "instance_type" {
   description = "Instance size of the bastion"
   default     = "t3.nano"
 }
+
+variable "disk_encrypt" {
+  description = "Instance EBS encrypt"
+  type        = bool
+  default     = true
+}
+
+variable "disk_size" {
+  description = "Root EBS size in GB"
+  type        = number
+  default     = 8
+}

@@ -19,6 +19,10 @@ resource "aws_kms_alias" "alias" {
   target_key_id = aws_kms_key.key.arn
 }
 
+data "aws_kms_alias" "kms-ebs" {
+  name = "alias/aws/ebs"
+}
+
 resource "aws_s3_bucket" "bucket" {
   bucket = var.bucket_name
   acl    = "private"
@@ -253,9 +257,10 @@ resource "aws_iam_instance_profile" "bastion_host_profile" {
 }
 
 resource "aws_launch_template" "bastion_launch_template" {
-  name_prefix   = local.name_prefix
-  image_id      = var.bastion_ami != "" ? var.bastion_ami : data.aws_ami.amazon-linux-2.id
-  instance_type = var.instance_type
+  name_prefix            = local.name_prefix
+  image_id               = var.bastion_ami != "" ? var.bastion_ami : data.aws_ami.amazon-linux-2.id
+  instance_type          = var.instance_type
+  update_default_version = true
   monitoring {
     enabled = true
   }
@@ -270,6 +275,17 @@ resource "aws_launch_template" "bastion_launch_template" {
   key_name = var.bastion_host_key_pair
 
   user_data = base64encode(data.template_file.user_data.rendered)
+
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size           = var.disk_size
+      volume_type           = "gp2"
+      delete_on_termination = true
+      encrypted             = var.disk_encrypt
+      kms_key_id            = var.disk_encrypt ? data.aws_kms_alias.kms-ebs.target_key_arn : ""
+    }
+  }
 
   tag_specifications {
     resource_type = "instance"

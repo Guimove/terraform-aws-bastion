@@ -321,7 +321,11 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   ]
 
   tags = concat(
-    list(map("key", "Name", "value", "ASG-${local.name_prefix}", "propagate_at_launch", true)),
+    list(tomap({
+      "key" = "Name"
+      "value" = "ASG-${local.name_prefix}"
+      "propagate_at_launch" = true
+    })),
     local.tags_asg_format
   )
 

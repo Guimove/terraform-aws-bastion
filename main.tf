@@ -1,15 +1,3 @@
-data "template_file" "user_data" {
-  template = file("${path.module}/user_data.sh")
-
-  vars = {
-    aws_region              = var.region
-    bucket_name             = var.bucket_name
-    extra_user_data_content = var.extra_user_data_content
-    allow_ssh_commands      = var.allow_ssh_commands
-    public_ssh_port         = var.public_ssh_port
-  }
-}
-
 resource "aws_kms_key" "key" {
   tags = merge(var.tags)
 }
@@ -274,7 +262,13 @@ resource "aws_launch_template" "bastion_launch_template" {
   }
   key_name = var.bastion_host_key_pair
 
-  user_data = base64encode(data.template_file.user_data.rendered)
+  user_data = base64encode(templatefile("${path.module}/user_data.sh", {
+    aws_region              = var.region
+    bucket_name             = var.bucket_name
+    extra_user_data_content = var.extra_user_data_content
+    allow_ssh_commands      = var.allow_ssh_commands
+    public_ssh_port         = var.public_ssh_port
+  }))
 
   block_device_mappings {
     device_name = "/dev/xvda"
@@ -289,12 +283,12 @@ resource "aws_launch_template" "bastion_launch_template" {
 
   tag_specifications {
     resource_type = "instance"
-    tags          = merge(map("Name", var.bastion_launch_template_name), merge(var.tags))
+    tags          = merge(tomap({ "Name" = var.bastion_launch_template_name }), merge(var.tags))
   }
 
   tag_specifications {
     resource_type = "volume"
-    tags          = merge(map("Name", var.bastion_launch_template_name), merge(var.tags))
+    tags          = merge(tomap({ "Name" = var.bastion_launch_template_name }), merge(var.tags))
   }
 
   lifecycle {
@@ -327,7 +321,11 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   ]
 
   tags = concat(
-    list(map("key", "Name", "value", "ASG-${local.name_prefix}", "propagate_at_launch", true)),
+    tolist([tomap({
+      "key"                 = "Name"
+      "value"               = "ASG-${local.name_prefix}"
+      "propagate_at_launch" = true
+    })]),
     local.tags_asg_format
   )
 

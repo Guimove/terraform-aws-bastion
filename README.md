@@ -59,15 +59,14 @@ module "bastion" {
 
 # Requirements
 
-No requirements.
+- Terraform >= 0.12
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | n/a |
-| null | n/a |
-| template | n/a |
+| aws | ~> 3.0 |
+| null | ~> 3.0 |
 
 ## Inputs
 

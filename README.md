@@ -93,7 +93,7 @@ module "bastion" {
 | hosted\_zone\_id | Name of the hosted zone were we'll register the bastion DNS name | `string` | `""` | no |
 | instance\_type | Instance size of the bastion | `string` | `"t3.nano"` | no |
 | is\_lb\_private | If TRUE the load balancer scheme will be "internal" else "internet-facing" | `any` | n/a | yes |
-| enable\_logs | Enable cron job to copy logs to S3 | `bool` | `true` | yes |
+| enable\_logs\_s3\_sync | Enable cron job to copy logs to S3 | `bool` | `true` | yes |
 | log\_auto\_clean | Enable or not the lifecycle | `bool` | `false` | no |
 | log\_expiry\_days | Number of days before logs expiration | `number` | `90` | no |
 | log\_glacier\_days | Number of days before moving logs to Glacier | `number` | `60` | no |

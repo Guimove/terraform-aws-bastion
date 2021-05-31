@@ -33,7 +33,7 @@ resource "aws_s3_bucket" "bucket" {
 
   lifecycle_rule {
     id      = "log"
-    enabled = var.enable_logs && var.log_auto_clean
+    enabled = var.enable_logs_s3_sync && var.log_auto_clean
 
     prefix = "logs/"
 

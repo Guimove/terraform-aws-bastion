@@ -33,7 +33,7 @@ resource "aws_s3_bucket" "bucket" {
 
   lifecycle_rule {
     id      = "log"
-    enabled = var.log_auto_clean
+    enabled = var.enable_logs_s3_sync && var.log_auto_clean
 
     prefix = "logs/"
 
@@ -268,6 +268,7 @@ resource "aws_launch_template" "bastion_launch_template" {
     extra_user_data_content = var.extra_user_data_content
     allow_ssh_commands      = var.allow_ssh_commands
     public_ssh_port         = var.public_ssh_port
+    sync_logs_cron_job      = var.enable_logs_s3_sync ? "*/5 * * * * /usr/bin/bastion/sync_s3" : ""
   }))
 
   block_device_mappings {

@@ -164,3 +164,9 @@ variable "disk_size" {
   type        = number
   default     = 8
 }
+
+variable "enable_logs_s3_sync" {
+  description = "Enable cron job to copy logs to S3"
+  type        = bool
+  default     = true
+}

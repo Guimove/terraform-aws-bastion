@@ -172,9 +172,9 @@ chmod 700 /usr/bin/bastion/sync_users
 ###########################################
 
 cat > ~/mycron << EOF
-*/5 * * * * /usr/bin/bastion/sync_s3
 */5 * * * * /usr/bin/bastion/sync_users
 0 0 * * * yum -y update --security
+${sync_logs_cron_job}
 EOF
 crontab ~/mycron
 rm ~/mycron

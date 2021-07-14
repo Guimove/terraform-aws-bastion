@@ -115,6 +115,7 @@ module "bastion" {
 | bucket\_name | The name of the bucket where logs are sent |
 | elb\_ip | The ELB DNS Name for the Bastion Host instances |
 | private\_instances\_security\_group | The security group ID of the the private instances that allow Bastion SSH ingress |
+| bastion\_auto\_scaling\_group | The autoscaling group name |
 
 Known issues
 ------------

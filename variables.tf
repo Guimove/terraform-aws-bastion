@@ -133,9 +133,9 @@ variable "extra_user_data_content" {
 }
 
 variable "allow_ssh_commands" {
-  description = "Allows the SSH user to execute one-off commands. Pass 'True' to enable. Warning: These commands are not logged and increase the vulnerability of the system. Use at your own discretion."
-  type        = string
-  default     = ""
+  description = "Allows the SSH user to execute one-off commands. Pass true to enable. Warning: These commands are not logged and increase the vulnerability of the system. Use at your own discretion."
+  type        = bool
+  default     = false
 }
 
 variable "bastion_iam_policy_name" {

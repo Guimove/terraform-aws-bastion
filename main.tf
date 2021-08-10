@@ -133,6 +133,7 @@ data "aws_iam_policy_document" "assume_policy_document" {
 }
 
 resource "aws_iam_role" "bastion_host_role" {
+  name                 = var.bastion_iam_role_name
   path                 = "/"
   assume_role_policy   = data.aws_iam_policy_document.assume_policy_document.json
   permissions_boundary = var.bastion_iam_permissions_boundary

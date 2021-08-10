@@ -78,6 +78,7 @@ module "bastion" {
 | bastion\_ami | The AMI that the Bastion Host will use. | `string` | `""` | no |
 | bastion\_host\_key\_pair | Select the key pair to use to launch the bastion host | `any` | n/a | yes |
 | bastion\_iam\_policy\_name | IAM policy name to create for granting the instance role access to the bucket | `string` | `"BastionHost"` | no |
+| bastion\_iam\_role\_name | IAM role name to create | `string` | `null` | no |
 | bastion\_instance\_count | Number of instances to create | `number` | `1` | no |
 | bastion\_launch\_template\_name | Bastion Launch template Name, will also be used for the ASG | `string` | `"bastion-lt"` | no |
 | bastion\_record\_name | DNS record name to use for the bastion | `string` | `""` | no |

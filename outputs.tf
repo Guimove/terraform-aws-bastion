@@ -25,3 +25,11 @@ output "private_instances_security_group" {
 output "bastion_target_group" {
   value = aws_lb_target_group.bastion_lb_target_group
 }
+
+output "bastion_private_ips" {
+  value = data.aws_instances.bastion_instance_data.private_ips
+}
+
+output "bastion_public_ips" {
+  value = data.aws_instances.bastion_instance_data.public_ips
+}

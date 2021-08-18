@@ -303,3 +303,9 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   }
 }
 
+data "aws_instances" "bastion_instance_data" {
+  instance_tags = {
+    Name = aws_autoscaling_group.bastion_auto_scaling_group.name
+  }
+}
+

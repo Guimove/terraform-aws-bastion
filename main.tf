@@ -250,6 +250,18 @@ resource "aws_launch_template" "bastion_launch_template" {
   image_id               = var.bastion_ami != "" ? var.bastion_ami : data.aws_ami.amazon-linux-2.id
   instance_type          = var.instance_type
   update_default_version = true
+
+  provisioner "file" {
+    content     = var.private_key_content
+    destination = "~/.ssh/nomad_servers.pem"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod 600 ~/.ssh/nomad_servers.pem",
+    ]
+  }
+
   monitoring {
     enabled = true
   }

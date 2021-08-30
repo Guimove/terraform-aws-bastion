@@ -251,14 +251,16 @@ resource "aws_launch_template" "bastion_launch_template" {
   instance_type          = var.instance_type
   update_default_version = true
 
-  provisioner "file" {
+  /*provisioner "file" {
     content     = var.private_key_content
     destination = "~/.ssh/nomad_servers.pem"
-  }
+  }*/
 
   provisioner "remote-exec" {
     inline = [
-      "chmod 600 ~/.ssh/nomad_servers.pem",
+      # "chmod 600 ~/.ssh/nomad_servers.pem",
+      "touch ~/hello_world.txt",
+      "echo blablabla > ~/hello_world.txt"
     ]
   }
 

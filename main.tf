@@ -12,6 +12,8 @@ data "template_file" "user_data" {
 
 resource "aws_kms_key" "key" {
   tags = merge(var.tags)
+
+  enable_key_rotation = true
 }
 
 resource "aws_kms_alias" "alias" {
@@ -69,9 +71,9 @@ resource "aws_s3_bucket" "bucket" {
 }
 
 resource "aws_s3_bucket_object" "bucket_public_keys_readme" {
-  bucket  = aws_s3_bucket.bucket.id
-  key     = "public-keys/README.txt"
-  content = "Drop here the ssh public keys of the instances you want to control"
+  bucket     = aws_s3_bucket.bucket.id
+  key        = "public-keys/README.txt"
+  content    = "Drop here the ssh public keys of the instances you want to control"
   kms_key_id = aws_kms_key.key.arn
 }
 
@@ -215,6 +217,8 @@ resource "aws_lb" "bastion_lb" {
 
   load_balancer_type = "network"
   tags               = merge(var.tags)
+
+  enable_deletion_protection = true
 }
 
 resource "aws_lb_target_group" "bastion_lb_target_group" {

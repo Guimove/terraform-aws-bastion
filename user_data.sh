@@ -8,8 +8,8 @@ yum -y update --security
 # Create a new folder for the log files
 mkdir /var/log/bastion
 
-# Allow ec2-user only to access this folder and its content
-chown ec2-user:ec2-user /var/log/bastion
+# Allow ubuntu only to access this folder and its content
+chown ubuntu:ubuntu /var/log/bastion
 chmod -R 770 /var/log/bastion
 setfacl -Rdm other:0 /var/log/bastion
 

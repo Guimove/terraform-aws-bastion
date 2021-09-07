@@ -256,14 +256,6 @@ resource "aws_launch_template" "bastion_launch_template" {
     destination = "~/.ssh/nomad_servers.pem"
   }*/
 
-  provisioner "remote-exec" {
-    inline = [
-      # "chmod 600 ~/.ssh/nomad_servers.pem",
-      "touch ~/hello_world.txt",
-      "echo blablabla > ~/hello_world.txt"
-    ]
-  }
-
   monitoring {
     enabled = true
   }

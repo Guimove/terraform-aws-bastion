@@ -251,11 +251,6 @@ resource "aws_launch_template" "bastion_launch_template" {
   instance_type          = var.instance_type
   update_default_version = true
 
-  /*provisioner "file" {
-    content     = var.private_key_content
-    destination = "~/.ssh/nomad_servers.pem"
-  }*/
-
   monitoring {
     enabled = true
   }

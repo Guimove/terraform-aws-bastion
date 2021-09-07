@@ -2,8 +2,6 @@ variable "bucket_name" {
   description = "Bucket name were the bastion will store the logs"
 }
 
-variable "private_key_content" {}
-
 variable "bucket_versioning" {
   default     = true
   description = "Enable bucket versioning or not"

@@ -90,11 +90,12 @@ module "bastion" {
 | disk_encrypt | EBS encryption of instance | `bool` | `true` | no |
 | disk_size | Root device disk size | `number` | `8` | no |
 | elb\_subnets | List of subnet were the ELB will be deployed | `list(string)` | n/a | yes |
+| enable\_logs\_s3\_sync | Enable cron job to copy logs to S3 | `bool` | `true` | yes |
 | extra\_user\_data\_content | Additional scripting to pass to the bastion host. For example, this can include installing postgresql for the `psql` command. | `string` | `""` | no |
 | hosted\_zone\_id | Name of the hosted zone were we'll register the bastion DNS name | `string` | `""` | no |
 | instance\_type | Instance size of the bastion | `string` | `"t3.nano"` | no |
 | is\_lb\_private | If TRUE the load balancer scheme will be "internal" else "internet-facing" | `any` | n/a | yes |
-| enable\_logs\_s3\_sync | Enable cron job to copy logs to S3 | `bool` | `true` | yes |
+| kms\_enable\_key\_rotation | Enable KMS key rotation | `bool` | `false` | no |
 | log\_auto\_clean | Enable or not the lifecycle | `bool` | `false` | no |
 | log\_expiry\_days | Number of days before logs expiration | `number` | `90` | no |
 | log\_glacier\_days | Number of days before moving logs to Glacier | `number` | `60` | no |

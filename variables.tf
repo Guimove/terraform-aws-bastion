@@ -176,3 +176,9 @@ variable "enable_logs_s3_sync" {
   type        = bool
   default     = true
 }
+
+variable "kms_enable_key_rotation" {
+  description = "Enable key rotation for the KMS key"
+  type        = bool
+  default     = false
+}

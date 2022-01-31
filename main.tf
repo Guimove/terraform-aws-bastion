@@ -1,5 +1,6 @@
 resource "aws_kms_key" "key" {
-  tags = merge(var.tags)
+  enable_key_rotation = var.kms_enable_key_rotation
+  tags                = merge(var.tags)
 }
 
 resource "aws_kms_alias" "alias" {

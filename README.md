@@ -94,6 +94,7 @@ module "bastion" {
 | extra\_user\_data\_content | Additional scripting to pass to the bastion host. For example, this can include installing postgresql for the `psql` command. | `string` | `""` | no |
 | hosted\_zone\_id | Name of the hosted zone were we'll register the bastion DNS name | `string` | `""` | no |
 | instance\_type | Instance size of the bastion | `string` | `"t3.nano"` | no |
+| ipv6_cidrs | List of IPv6 CIDRs than can access to the bastion. Default : ::/0 | `list(string)` | <pre>[<br>  "::/0"<br>]</pre> | no |
 | is\_lb\_private | If TRUE the load balancer scheme will be "internal" else "internet-facing" | `any` | n/a | yes |
 | kms\_enable\_key\_rotation | Enable KMS key rotation | `bool` | `false` | no |
 | log\_auto\_clean | Enable or not the lifecycle | `bool` | `false` | no |

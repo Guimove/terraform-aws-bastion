@@ -182,3 +182,12 @@ variable "kms_enable_key_rotation" {
   type        = bool
   default     = false
 }
+
+variable "ipv6_cidrs" {
+  description = "List of IPv6 CIDRs than can access to the bastion. Default : ::/0"
+  type        = list(string)
+
+  default = [
+    "::/0",
+  ]
+}

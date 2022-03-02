@@ -12,56 +12,7 @@ data "aws_kms_alias" "kms-ebs" {
   name = "alias/aws/ebs"
 }
 
-resource "aws_s3_bucket" "bucket" {
-  bucket = var.bucket_name
-  acl    = "private"
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        kms_master_key_id = aws_kms_key.key.id
-        sse_algorithm     = "aws:kms"
-      }
-    }
-  }
-
-
-  force_destroy = var.bucket_force_destroy
-
-  versioning {
-    enabled = var.bucket_versioning
-  }
-
-  lifecycle_rule {
-    id      = "log"
-    enabled = var.enable_logs_s3_sync && var.log_auto_clean
-
-    prefix = "logs/"
-
-    tags = {
-      rule      = "log"
-      autoclean = var.log_auto_clean
-    }
-
-    transition {
-      days          = var.log_standard_ia_days
-      storage_class = "STANDARD_IA"
-    }
-
-    transition {
-      days          = var.log_glacier_days
-      storage_class = "GLACIER"
-    }
-
-    expiration {
-      days = var.log_expiry_days
-    }
-  }
-
-  tags = merge(var.tags)
-}
-
-resource "aws_s3_bucket_object" "bucket_public_keys_readme" {
+resource "aws_s3_object" "bucket_public_keys_readme" {
   bucket     = aws_s3_bucket.bucket.id
   key        = "public-keys/README.txt"
   content    = "Drop here the ssh public keys of the instances you want to control"
@@ -324,14 +275,21 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
     "OldestLaunchConfiguration",
   ]
 
-  tags = concat(
-    tolist([tomap({
-      "key"                 = "Name"
-      "value"               = "ASG-${local.name_prefix}"
-      "propagate_at_launch" = true
-    })]),
-    local.tags_asg_format
-  )
+  dynamic "tag" {
+    for_each = var.tags
+
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
+    }
+  }
+
+  tag {
+    key                 = "Name"
+    value               = "ASG-${local.name_prefix}"
+    propagate_at_launch = true
+  }
 
   lifecycle {
     create_before_destroy = true

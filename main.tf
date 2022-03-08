@@ -35,7 +35,7 @@ resource "aws_security_group_rule" "ingress_bastion" {
   from_port        = var.public_ssh_port
   to_port          = var.public_ssh_port
   protocol         = "TCP"
-  cidr_blocks      = local.ipv4_cidr_block
+  cidr_blocks      = concat(data.aws_subnet.subnets[*].cidr_block, var.cidrs)
   ipv6_cidr_blocks = local.ipv6_cidr_block
 
   security_group_id = local.security_group

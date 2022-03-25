@@ -35,7 +35,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket" {
     id     = "log"
     status = var.enable_logs_s3_sync && var.log_auto_clean ? "Enabled" : "Disabled"
 
-    prefix = "logs/"
+    filter {
+      prefix = "logs/"
+    }
 
     transition {
       days          = var.log_standard_ia_days

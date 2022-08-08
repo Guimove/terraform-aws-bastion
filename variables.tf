@@ -138,6 +138,12 @@ variable "allow_ssh_commands" {
   default     = false
 }
 
+variable "allow_ssh_commands_for_users" {
+  description = "Allows a list of users to execute one-off commands. Warning: These commands are not logged and increase the vulnerability of the system. Use at your own discretion."
+  type        = list(string)
+  default     = []
+}
+
 variable "bastion_iam_role_name" {
   description = "IAM role name to create"
   type        = string

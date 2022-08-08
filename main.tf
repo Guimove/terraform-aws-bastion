@@ -217,12 +217,13 @@ resource "aws_launch_template" "bastion_launch_template" {
   key_name = var.bastion_host_key_pair
 
   user_data = base64encode(templatefile("${path.module}/user_data.sh", {
-    aws_region              = var.region
-    bucket_name             = var.bucket_name
-    extra_user_data_content = var.extra_user_data_content
-    allow_ssh_commands      = lower(var.allow_ssh_commands)
-    public_ssh_port         = var.public_ssh_port
-    sync_logs_cron_job      = var.enable_logs_s3_sync ? "*/5 * * * * /usr/bin/bastion/sync_s3" : ""
+    aws_region                   = var.region
+    bucket_name                  = var.bucket_name
+    extra_user_data_content      = var.extra_user_data_content
+    allow_ssh_commands           = lower(var.allow_ssh_commands)
+    allow_ssh_commands_for_users = var.allow_ssh_commands_for_users
+    public_ssh_port              = var.public_ssh_port
+    sync_logs_cron_job           = var.enable_logs_s3_sync ? "*/5 * * * * /usr/bin/bastion/sync_s3" : ""
   }))
 
   block_device_mappings {

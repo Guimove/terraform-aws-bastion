@@ -291,6 +291,10 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
     propagate_at_launch = true
   }
 
+  instance_refresh {
+    strategy = "Rolling"
+  }
+
   lifecycle {
     create_before_destroy = true
   }

@@ -255,7 +255,7 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   name_prefix = "ASG-${local.name_prefix}"
   launch_template {
     id      = aws_launch_template.bastion_launch_template.id
-    version = "$Latest"
+    version = aws_launch_template.bastion_launch_template.latest_version
   }
   max_size         = var.bastion_instance_count
   min_size         = var.bastion_instance_count
@@ -289,6 +289,10 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
     key                 = "Name"
     value               = "ASG-${local.name_prefix}"
     propagate_at_launch = true
+  }
+
+  instance_refresh {
+    strategy = "Rolling"
   }
 
   lifecycle {

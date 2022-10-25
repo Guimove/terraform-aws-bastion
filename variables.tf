@@ -191,3 +191,9 @@ variable "ipv6_cidrs" {
     "::/0",
   ]
 }
+
+variable "use_imds_v2" {
+  description = "Use (IMDSv2) Instance Metadata Service V2"
+  type        = bool
+  default     = false
+}

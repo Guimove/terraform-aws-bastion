@@ -236,6 +236,14 @@ resource "aws_launch_template" "bastion_launch_template" {
     }
   }
 
+  metadata_options {
+    http_endpoint               = var.metadata_options.http_endpoint
+    http_tokens                 = var.metadata_options.http_tokens
+    http_put_response_hop_limit = var.metadata_options.http_put_response_hop_limit
+    http_protocol_ipv6          = var.metadata_options.http_protocol_ipv6
+    instance_metadata_tags      = var.metadata_options.instance_metadata_tags
+  }
+
   tag_specifications {
     resource_type = "instance"
     tags          = merge(tomap({ "Name" = var.bastion_launch_template_name }), merge(var.tags))

@@ -191,3 +191,21 @@ variable "ipv6_cidrs" {
     "::/0",
   ]
 }
+
+variable "metadata_options" {
+  description = "The metadata options for the instance."
+  type = object({
+    http_endpoint               = string
+    http_tokens                 = string
+    http_put_response_hop_limit = number
+    http_protocol_ipv6          = string
+    instance_metadata_tags      = string
+  })
+  default = {
+    http_endpoint               = "enabled"
+    http_tokens                 = "optional"
+    http_put_response_hop_limit = 1
+    http_protocol_ipv6          = "disabled"
+    instance_metadata_tags      = "disabled"
+  }
+}

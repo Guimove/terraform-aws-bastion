@@ -247,6 +247,10 @@ resource "aws_launch_template" "bastion_launch_template" {
     tags          = merge(tomap({ "Name" = var.bastion_launch_template_name }), merge(var.tags))
   }
 
+  metadata_options {
+    http_endpoint = "disabled"
+  }
+
   lifecycle {
     create_before_destroy = true
   }

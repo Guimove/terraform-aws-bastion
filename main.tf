@@ -248,7 +248,8 @@ resource "aws_launch_template" "bastion_launch_template" {
   }
 
   metadata_options {
-    http_endpoint = "disabled"
+    http_endpoint = "enabled"
+    http_tokens   = "required"
   }
 
   lifecycle {

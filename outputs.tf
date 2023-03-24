@@ -37,3 +37,7 @@ output "private_instances_security_group" {
 output "bastion_auto_scaling_group_name" {
   value = aws_autoscaling_group.bastion_auto_scaling_group.name
 }
+
+output "bastion_elb_id" {
+  value = aws_lb.bastion_lb.id
+}

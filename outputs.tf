@@ -19,15 +19,15 @@ output "bucket_arn" {
 }
 
 output "elb_ip" {
-  value = aws_lb.bastion_lb.dns_name
+  value = var.create_elb ? aws_lb.bastion_lb[0].dns_name : null
 }
 
 output "elb_arn" {
-  value = aws_lb.bastion_lb.arn
+  value = var.create_elb ? aws_lb.bastion_lb[0].arn : null
 }
 
 output "target_group_arn" {
-  value = aws_lb_target_group.bastion_lb_target_group.arn
+  value = var.create_elb ? aws_lb_target_group.bastion_lb_target_group[0].arn : null
 }
 
 output "private_instances_security_group" {

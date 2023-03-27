@@ -32,6 +32,8 @@ variable "cidrs" {
 
 variable "is_lb_private" {
   description = "If TRUE the load balancer scheme will be \"internal\" else \"internet-facing\""
+  nullable    = true
+  default     = null
 }
 
 variable "vpc_id" {
@@ -77,6 +79,7 @@ variable "bastion_ami" {
 variable "elb_subnets" {
   type        = list(string)
   description = "List of subnet were the ELB will be deployed"
+  default     = []
 }
 
 variable "auto_scaling_group_subnets" {
@@ -190,4 +193,9 @@ variable "ipv6_cidrs" {
   default = [
     "::/0",
   ]
+}
+
+variable "create_elb" {
+  description = "Choose if you want to deploy an ELB for accessing bastion hosts. If true, you must set elb_subnets and is_lb_private"
+  default     = true
 }

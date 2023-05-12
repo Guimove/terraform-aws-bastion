@@ -192,7 +192,7 @@ variable "ipv6_cidrs" {
   ]
 }
 
-variable "enable_http_endpoint" {
+variable "http_endpoint" {
   description = "Whether the metadata service is available."
   type        = bool
   default     = true

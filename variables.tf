@@ -1,5 +1,5 @@
 variable "bucket_name" {
-  description = "Bucket name were the bastion will store the logs"
+  description = "Bucket name where the bastion will store the logs"
 }
 
 variable "bucket_versioning" {
@@ -35,7 +35,7 @@ variable "is_lb_private" {
 }
 
 variable "vpc_id" {
-  description = "VPC id were we'll deploy the bastion"
+  description = "VPC id where we'll deploy the bastion"
 }
 
 variable "bastion_host_key_pair" {
@@ -43,7 +43,7 @@ variable "bastion_host_key_pair" {
 }
 
 variable "hosted_zone_id" {
-  description = "Name of the hosted zone were we'll register the bastion DNS name"
+  description = "Name of the hosted zone where we'll register the bastion DNS name"
   default     = ""
 }
 
@@ -76,12 +76,12 @@ variable "bastion_ami" {
 
 variable "elb_subnets" {
   type        = list(string)
-  description = "List of subnet were the ELB will be deployed"
+  description = "List of subnets where the ELB will be deployed"
 }
 
 variable "auto_scaling_group_subnets" {
   type        = list(string)
-  description = "List of subnet were the Auto Scalling Group will deploy the instances"
+  description = "List of subnets where the Auto Scalling Group will deploy the instances"
 }
 
 variable "associate_public_ip_address" {

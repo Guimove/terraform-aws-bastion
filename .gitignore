@@ -4,6 +4,7 @@
 
 # Module directory
 .terraform/
+.terraform.lock.hcl
 
 # Jetbrains
 .idea/

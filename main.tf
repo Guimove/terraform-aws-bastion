@@ -246,6 +246,14 @@ resource "aws_launch_template" "bastion_launch_template" {
     tags          = merge(tomap({ "Name" = var.bastion_launch_template_name }), merge(var.tags))
   }
 
+  metadata_options {
+    http_endpoint               = var.http_endpoint ? "enabled" : "disabled"
+    http_tokens                 = var.use_imds_v2 ? "required" : "optional"
+    http_put_response_hop_limit = var.http_put_response_hop_limit
+    http_protocol_ipv6          = var.enable_http_protocol_ipv6 ? "enabled" : "disabled"
+    instance_metadata_tags      = var.enable_instance_metadata_tags ? "enabled" : "disabled"
+  }
+
   lifecycle {
     create_before_destroy = true
   }

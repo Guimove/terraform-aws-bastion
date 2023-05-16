@@ -5,7 +5,7 @@ output "bastion_auto_scaling_group_name" {
 
 output "bastion_elb_id" {
   description = "The ID of the ELB for bastion hosts"
-  value       = aws_lb.bastion_lb.id
+  value       = aws_lb.bastion_lb[0].id
 }
 
 output "bastion_host_security_group" {

@@ -5,7 +5,7 @@ output "bastion_auto_scaling_group_name" {
 
 output "bastion_elb_id" {
   description = "The ID of the ELB for bastion hosts"
-  value       = aws_lb.bastion_lb[0].id
+  value       = var.create_elb ? aws_lb.bastion_lb[0].id : null
 }
 
 output "bastion_host_security_group" {
@@ -40,7 +40,7 @@ output "elb_arn" {
 
 output "elb_ip" {
   description = "The DNS name of the ELB for bastion hosts"
-  value       = var.create_elb ? aws_lb.bastion_lb[0].dns_name : null
+  value       = var.@ ? aws_lb.bastion_lb[0].dns_name : null
 }
 
 output "private_instances_security_group" {

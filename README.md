@@ -131,7 +131,7 @@ No modules.
 | <a name="input_bucket_versioning"></a> [bucket\_versioning](#input\_bucket\_versioning) | Enable bucket versioning or not | `bool` | `true` | no |
 | <a name="input_cidrs"></a> [cidrs](#input\_cidrs) | List of CIDRs that can access the bastion. Default: 0.0.0.0/0 | `list(string)` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
 | <a name="input_create_dns_record"></a> [create\_dns\_record](#input\_create\_dns\_record) | Choose if you want to create a record name for the bastion (LB). If true, 'hosted\_zone\_id' and 'bastion\_record\_name' are mandatory | `bool` | n/a | yes |
-| <a name="input_create_elb"></a> [create\_elb](#input\_create\_elb) | Choose if you want to deploy an ELB for accessing bastion hosts. If true, you must set elb\_subnets and is\_lb\_private | `bool` | `true` | no |
+| <a name="input_create_elb"></a> [create\_elb](#input\_create\_elb) | Choose if you want to deploy an ELB for accessing bastion hosts. Only select false if there is no need to SSH into bastion from outside. If true, you must set elb\_subnets and is\_lb\_private | `bool` | `true` | no |
 | <a name="input_disk_encrypt"></a> [disk\_encrypt](#input\_disk\_encrypt) | Instance EBS encryption | `bool` | `true` | no |
 | <a name="input_disk_size"></a> [disk\_size](#input\_disk\_size) | Root EBS size in GB | `number` | `8` | no |
 | <a name="input_elb_subnets"></a> [elb\_subnets](#input\_elb\_subnets) | List of subnets where the ELB will be deployed | `list(string)` | `[]` | no |

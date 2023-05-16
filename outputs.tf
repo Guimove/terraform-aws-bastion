@@ -40,7 +40,7 @@ output "elb_arn" {
 
 output "elb_ip" {
   description = "The DNS name of the ELB for bastion hosts"
-  value       = var.@ ? aws_lb.bastion_lb[0].dns_name : null
+  value       = var.create_elb ? aws_lb.bastion_lb[0].dns_name : null
 }
 
 output "private_instances_security_group" {

@@ -5,7 +5,7 @@ output "bastion_auto_scaling_group_name" {
 
 output "bastion_elb_id" {
   description = "The ID of the ELB for bastion hosts"
-  value       = var.create_elb ? aws_lb.bastion_lb[0].id : null
+  value       = var.create_elb ? try(aws_lb.bastion_lb[0].id, null) : null
 }
 
 output "bastion_host_security_group" {
@@ -35,12 +35,12 @@ output "bucket_name" {
 
 output "elb_arn" {
   description = "The ARN of the ELB for bastion hosts"
-  value       = var.create_elb ? aws_lb.bastion_lb[0].arn : null
+  value       = var.create_elb ? try(aws_lb.bastion_lb[0].arn, null) : null
 }
 
 output "elb_ip" {
   description = "The DNS name of the ELB for bastion hosts"
-  value       = var.create_elb ? aws_lb.bastion_lb[0].dns_name : null
+  value       = var.create_elb ? try(aws_lb.bastion_lb[0].dns_name, null) : null
 }
 
 output "private_instances_security_group" {
@@ -50,5 +50,5 @@ output "private_instances_security_group" {
 
 output "target_group_arn" {
   description = "The ARN of the target group for the ELB"
-  value       = var.create_elb ? aws_lb_target_group.bastion_lb_target_group[0].arn : null
+  value       = var.create_elb ? try(aws_lb_target_group.bastion_lb_target_group[0].arn, null) : null
 }

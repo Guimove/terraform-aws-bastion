@@ -13,6 +13,7 @@ data "aws_kms_alias" "kms-ebs" {
 }
 
 resource "aws_s3_object" "bucket_public_keys_readme" {
+  acl        = "private"
   bucket     = aws_s3_bucket.bucket.id
   key        = "public-keys/README.txt"
   content    = "Drop here the ssh public keys of the instances you want to control"

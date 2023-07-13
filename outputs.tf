@@ -8,6 +8,11 @@ output "bastion_elb_id" {
   value       = var.create_elb ? try(aws_lb.bastion_lb[0].id, null) : null
 }
 
+output "bastion_host_iam_role_id" {
+  description = "The ID of the bastion host iam role"
+  value       = aws_iam_role.bastion_host_role.id
+}
+
 output "bastion_host_security_group" {
   description = "The ID of the bastion host security group"
   value       = aws_security_group.bastion_host_security_group[*].id

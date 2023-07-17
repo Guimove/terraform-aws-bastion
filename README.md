@@ -163,6 +163,7 @@ No modules.
 |------|-------------|
 | <a name="output_bastion_auto_scaling_group_name"></a> [bastion\_auto\_scaling\_group\_name](#output\_bastion\_auto\_scaling\_group\_name) | The name of the Auto Scaling Group for bastion hosts |
 | <a name="output_bastion_elb_id"></a> [bastion\_elb\_id](#output\_bastion\_elb\_id) | The ID of the ELB for bastion hosts |
+| <a name="output_bastion_host_iam_role_id"></a> [bastion\_host\_iam\_role\_id](#output\_bastion\_host\_iam\_role\_id) | The ID of the bastion host IAM role |
 | <a name="output_bastion_host_security_group"></a> [bastion\_host\_security\_group](#output\_bastion\_host\_security\_group) | The ID of the bastion host security group |
 | <a name="output_bucket_arn"></a> [bucket\_arn](#output\_bucket\_arn) | The ARN of the S3 bucket |
 | <a name="output_bucket_kms_key_alias"></a> [bucket\_kms\_key\_alias](#output\_bucket\_kms\_key\_alias) | The name of the KMS key alias for the bucket |

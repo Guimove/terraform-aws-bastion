@@ -49,7 +49,7 @@ if [[ -z $SSH_ORIGINAL_COMMAND ]]; then
 else
 
   # If the module consumer wants to allow remote commands (for ansible or other) then allow that command through.
-  if [ "${allow_ssh_commands}" == "true" ]; then
+  if [ "${allow_ssh_commands}" == "true" ]%{ for user in allow_ssh_commands_for_users } || [ "${user}" == "`whoami`" ]%{endfor ~}; then
     exec /bin/bash -c "$SSH_ORIGINAL_COMMAND"
   else
     # The "script" program could be circumvented with some commands (e.g. bash, nc).

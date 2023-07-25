@@ -4,6 +4,12 @@ variable "allow_ssh_commands" {
   default     = false
 }
 
+variable "allow_ssh_commands_for_users" {
+  description = "Allows a list of users to execute one-off commands. Warning: These commands are not logged and increase the vulnerability of the system. Use at your own discretion."
+  type        = list(string)
+  default     = []
+}
+
 variable "associate_public_ip_address" {
   type    = bool
   default = true

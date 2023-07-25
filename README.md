@@ -114,6 +114,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_allow_ssh_commands"></a> [allow\_ssh\_commands](#input\_allow\_ssh\_commands) | Allows the SSH user to execute one-off commands. Pass true to enable. Warning: These commands are not logged and increase the vulnerability of the system. Use at your own discretion. | `bool` | `false` | no |
+| <a name="input_allow_ssh_commands_for_users"></a> [allow\_ssh\_commands\_for\)users](#input\_allow\_ssh\_commands\_for\_users) | Allows a list of users to execute one-off commands. Warning: These commands are not logged and increase the vulnerability of the system. Use at your own discretion. | `list(string)` | `[]` | no |
 | <a name="input_associate_public_ip_address"></a> [associate\_public\_ip\_address](#input\_associate\_public\_ip\_address) | n/a | `bool` | `true` | no |
 | <a name="input_auto_scaling_group_subnets"></a> [auto\_scaling\_group\_subnets](#input\_auto\_scaling\_group\_subnets) | List of subnets where the Auto Scaling Group will deploy the instances | `list(string)` | n/a | yes |
 | <a name="input_bastion_additional_security_groups"></a> [bastion\_additional\_security\_groups](#input\_bastion\_additional\_security\_groups) | List of additional security groups to attach to the launch template | `list(string)` | `[]` | no |

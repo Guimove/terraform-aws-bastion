@@ -167,13 +167,33 @@ EOF
 
 chmod 700 /usr/bin/bastion/sync_users
 
+##############################
+## INSTALL SECURITY UPDATES ##
+##############################
+
+# Security updates are installed by yum. If script is updated (package util-linux)
+# then the setuid bit needs to be recovered. Otherwise clients can not loging.
+
+cat > /usr/bin/bastion/yum_update << 'EOF'
+#!/usr/bin/env bash
+
+yum -y update --security
+
+chown root:ec2-user /usr/bin/script
+chmod g+s /usr/bin/script
+
+EOF
+
+chmod 700 /usr/bin/bastion/yum_update
+
+
 ###########################################
 ## SCHEDULE SCRIPTS AND SECURITY UPDATES ##
 ###########################################
 
 cat > ~/mycron << EOF
 */5 * * * * /usr/bin/bastion/sync_users
-0 0 * * * yum -y update --security
+0 0 * * * /usr/bin/bastion/yum_update
 ${sync_logs_cron_job}
 EOF
 crontab ~/mycron

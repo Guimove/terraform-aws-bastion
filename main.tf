@@ -30,7 +30,7 @@ resource "aws_security_group" "bastion_host_security_group" {
 }
 
 resource "aws_security_group_rule" "ingress_bastion" {
-  count            = var.bastion_security_group_id == "" ? 1 : 0
+  count            = var.bastion_security_group_id == "" && var.create_elb ? 1 : 0
   description      = "Incoming traffic to bastion"
   type             = "ingress"
   from_port        = var.public_ssh_port
@@ -149,16 +149,18 @@ resource "aws_route53_record" "bastion_record_name" {
   name    = var.bastion_record_name
   zone_id = var.hosted_zone_id
   type    = "A"
-  count   = var.create_dns_record ? 1 : 0
+  count   = var.create_dns_record && var.create_elb ? 1 : 0
 
   alias {
     evaluate_target_health = true
-    name                   = aws_lb.bastion_lb.dns_name
-    zone_id                = aws_lb.bastion_lb.zone_id
+    name                   = aws_lb.bastion_lb[0].dns_name
+    zone_id                = aws_lb.bastion_lb[0].zone_id
   }
 }
 
 resource "aws_lb" "bastion_lb" {
+  count = var.create_elb ? 1 : 0
+
   internal = var.is_lb_private
   name     = "${local.name_prefix}-lb"
 
@@ -166,9 +168,18 @@ resource "aws_lb" "bastion_lb" {
 
   load_balancer_type = "network"
   tags               = merge(var.tags)
+
+  lifecycle {
+    precondition {
+      condition     = !var.create_elb || (length(var.elb_subnets) > 0 && var.is_lb_private != null)
+      error_message = "elb_subnets and is_lb_private must be set when creating a load balancer"
+    }
+  }
 }
 
 resource "aws_lb_target_group" "bastion_lb_target_group" {
+  count = var.create_elb ? 1 : 0
+
   name        = "${local.name_prefix}-lb-target"
   port        = var.public_ssh_port
   protocol    = "TCP"
@@ -184,12 +195,14 @@ resource "aws_lb_target_group" "bastion_lb_target_group" {
 }
 
 resource "aws_lb_listener" "bastion_lb_listener_22" {
+  count = var.create_elb ? 1 : 0
+
   default_action {
-    target_group_arn = aws_lb_target_group.bastion_lb_target_group.arn
+    target_group_arn = aws_lb_target_group.bastion_lb_target_group[0].arn
     type             = "forward"
   }
 
-  load_balancer_arn = aws_lb.bastion_lb.arn
+  load_balancer_arn = aws_lb.bastion_lb[0].arn
   port              = var.public_ssh_port
   protocol          = "TCP"
 }
@@ -249,8 +262,11 @@ resource "aws_launch_template" "bastion_launch_template" {
   }
 
   metadata_options {
-    http_endpoint = "enabled"
-    http_tokens   = "required"
+    http_endpoint               = var.http_endpoint ? "enabled" : "disabled"
+    http_tokens                 = var.use_imds_v2 ? "required" : "optional"
+    http_put_response_hop_limit = var.http_put_response_hop_limit
+    http_protocol_ipv6          = var.enable_http_protocol_ipv6 ? "enabled" : "disabled"
+    instance_metadata_tags      = var.enable_instance_metadata_tags ? "enabled" : "disabled"
   }
 
   lifecycle {
@@ -274,9 +290,9 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   health_check_grace_period = 180
   health_check_type         = "EC2"
 
-  target_group_arns = [
-    aws_lb_target_group.bastion_lb_target_group.arn,
-  ]
+  target_group_arns = var.create_elb ? [
+    aws_lb_target_group.bastion_lb_target_group[0].arn,
+  ] : null
 
   termination_policies = [
     "OldestLaunchConfiguration",

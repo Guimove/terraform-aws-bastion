@@ -29,7 +29,7 @@ resource "aws_security_group" "bastion_host_security_group" {
 }
 
 resource "aws_security_group_rule" "ingress_bastion" {
-  count            = var.bastion_security_group_id == "" && var.create_elb ? 1 : 0
+  count            = var.bastion_security_group_id == "" || var.create_elb ? 1 : 0
   description      = "Incoming traffic to bastion"
   type             = "ingress"
   from_port        = var.public_ssh_port

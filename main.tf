@@ -85,6 +85,10 @@ data "aws_iam_policy_document" "assume_policy_document" {
   }
 }
 
+data "aws_iam_policy" "managed_core" {
+  arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
 resource "aws_iam_role" "bastion_host_role" {
   name                 = var.bastion_iam_role_name
   path                 = "/"
@@ -137,6 +141,11 @@ data "aws_iam_policy_document" "bastion_host_policy_document" {
 resource "aws_iam_policy" "bastion_host_policy" {
   name   = var.bastion_iam_policy_name
   policy = data.aws_iam_policy_document.bastion_host_policy_document.json
+}
+
+resource "aws_iam_role_policy_attachment" "managed_core" {
+  policy_arn = aws_iam_policy.managed_core.arn
+  role       = aws_iam_role.bastion_host_role.name
 }
 
 resource "aws_iam_role_policy_attachment" "bastion_host" {
